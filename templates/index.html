@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Demo | SentinelGate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --danger-color: #ef476f;
+            --success-color: #06d6a0;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            font-weight: 600;
+            border: none;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .vulnerable .card-header {
+            background-color: var(--danger-color);
+        }
+        
+        .secure .card-header {
+            background-color: var(--success-color);
+        }
+        
+        .btn-vulnerable {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-secure {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .test-case-btn {
+            margin: 0.25rem;
+            transition: all 0.2s;
+        }
+        
+        .test-case-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+        }
+        
+        .result-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .loading-spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 0.25rem solid rgba(0, 0, 0, 0.1);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-lock-fill me-2"></i>SentinelGate
+            </a>
+            <button class="btn btn-outline-primary btn-sm" onclick="resetDatabase()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Database
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold mb-3">SQL Injection Demo</h1>
+            <p class="lead text-muted">A demonstration of SQL injection vulnerabilities and secure coding practices</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Vulnerable Section -->
+            <div class="col-lg-6">
+                <div class="card h-100 vulnerable">
+                    <div class="card-header text-white">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Vulnerable Endpoint
+                    </div>
+                    <div class="card-body">
+                        <form id="vulnerableForm" class="mb-4">
+                            <div class="mb-3">
+                                <label for="vulnInput" class="form-label fw-bold">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input type="text" class="form-control" id="vulnInput" 
+                                           placeholder="Enter username" value="Admin' OR '1'='1">
+                                </div>
+                                <div class="form-text text-danger">
+                                    <i class="bi bi-exclamation-circle-fill"></i> This endpoint is vulnerable to SQL injection
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-vulnerable text-white w-100">
+                                <i class="bi bi-play-fill me-2"></i>Test Vulnerable Query
+                            </button>
+                        </form>
+                        
+                        <div class="loading" id="vulnLoading">
+                            <div class="loading-spinner"></div>
+                            <p class="mt-2 mb-0">Executing query...</p>
+                        </div>
+                        
+                        <div id="vulnResult" class="d-none">
+                            <h6 class="fw-bold mb-3">Query Results</h6>
+                            <div class="result-container mb-3">
+                                <pre id="vulnResponse" class="mb-0">No results yet</pre>
+                            </div>
+                            <div class="mt-3">
+                                <h6 class="fw-bold">Executed Query:</h6>
+                                <pre id="vulnQuery" class="bg-light p-2">No query executed yet</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secure Section -->
+            <div class="col-lg-6">
+                <div class="card h-100 secure">
+                    <div class="card-header text-white">
+                        <i class="bi bi-shield-check-fill me-2"></i>Secure Endpoint
+                    </div>
+                    <div class="card-body">
+                        <form id="secureForm" class="mb-4">
+                            <div class="mb-3">
+                                <label for="secureInput" class="form-label fw-bold">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input type="text" class="form-control" id="secureInput" 
+                                           placeholder="Enter username" value="Admin">
+                                </div>
+                                <div class="form-text text-success">
+                                    <i class="bi bi-shield-check"></i> This endpoint is protected against SQL injection
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-secure text-white w-100">
+                                <i class="bi bi-shield-lock me-2"></i>Test Secure Query
+                            </button>
+                        </form>
+                        
+                        <div class="loading" id="secureLoading">
+                            <div class="loading-spinner"></div>
+                            <p class="mt-2 mb-0">Executing query...</p>
+                        </div>
+                        
+                        <div id="secureResult" class="d-none">
+                            <h6 class="fw-bold mb-3">Query Results</h6>
+                            <div class="result-container mb-3">
+                                <pre id="secureResponse" class="mb-0">No results yet</pre>
+                            </div>
+                            <div class="mt-3">
+                                <h6 class="fw-bold">Query Method:</h6>
+                                <p class="mb-0">Parameterized query with proper input sanitization</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Cases Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <i class="bi bi-lightning-charge-fill me-2"></i>Test Cases
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Try these test cases:</h5>
+                        <div class="d-flex flex-wrap">
+                            <button class="btn btn-outline-primary test-case-btn" 
+                                    data-vuln="Admin" 
+                                    data-secure="Admin">
+                                <i class="bi bi-person-check me-1"></i> Valid User
+                            </button>
+                            <button class="btn btn-outline-danger test-case-btn" 
+                                    data-vuln="Admin' OR '1'='1" 
+                                    data-secure="Admin' OR '1'='1">
+                                <i class="bi bi-bug me-1"></i> SQL Injection
+                            </button>
+                            <button class="btn btn-outline-danger test-case-btn" 
+                                    data-vuln="'; DROP TABLE secrets; --" 
+                                    data-secure="'; DROP TABLE secrets; --">
+                                <i class="bi bi-exclamation-octagon me-1"></i> Malicious Input
+                            </button>
+                            <button class="btn btn-outline-info test-case-btn" 
+                                    data-vuln="NonExistentUser" 
+                                    data-secure="NonExistentUser">
+                                <i class="bi bi-question-circle me-1"></i> Non-existent User
+                            </button>
+                            <button class="btn btn-outline-warning test-case-btn" 
+                                    data-vuln="' OR '1'='1" 
+                                    data-secure="' OR '1'='1">
+                                <i class="bi bi-exclamation-triangle me-1"></i> Always True
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <i class="bi bi-info-circle-fill me-2"></i>About This Demo
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Vulnerable Endpoint</h5>
+                                <p>This endpoint is vulnerable to SQL injection because it directly concatenates user input into the SQL query. Attackers can manipulate the input to execute arbitrary SQL commands.</p>
+                                <pre class="bg-dark text-light p-2"># Vulnerable Code Example
+query = f"SELECT * FROM secrets WHERE name = '{user_input}'"
+cursor.execute(query)</pre>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Secure Endpoint</h5>
+                                <p>This endpoint is protected against SQL injection by using parameterized queries, which properly escape and sanitize user input before including it in SQL statements.</p>
+                                <pre class="bg-dark text-light p-2"># Secure Code Example
+query = "SELECT * FROM secrets WHERE name = ?"
+cursor.execute(query, (user_input,))</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container text-center">
+            <p class="mb-0">© 2024 SentinelGate SQL Injection Demo. For educational purposes only.</p>
+            <p class="mb-0 text-muted">
+                <small>Built with <i class="bi bi-heart-fill text-danger"></i> using Flask and Bootstrap</small>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle form submissions
+            document.getElementById('vulnerableForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const input = document.getElementById('vulnInput').value.trim();
+                if (input) {
+                    testEndpoint('vulnerable', input, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading');
+                }
+            });
+
+            document.getElementById('secureForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const input = document.getElementById('secureInput').value.trim();
+                if (input) {
+                    testEndpoint('secure', input, 'secureResponse', null, 'secureResult', 'secureLoading');
+                }
+            });
+
+            // Handle test case buttons
+            document.querySelectorAll('.test-case-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const vulnInput = this.getAttribute('data-vuln');
+                    const secureInput = this.getAttribute('data-secure');
+                    
+                    // Update input fields
+                    document.getElementById('vulnInput').value = vulnInput;
+                    document.getElementById('secureInput').value = secureInput;
+                    
+                    // Auto-submit both forms
+                    if (vulnInput) {
+                        testEndpoint('vulnerable', vulnInput, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading');
+                    }
+                    if (secureInput) {
+                        testEndpoint('secure', secureInput, 'secureResponse', null, 'secureResult', 'secureLoading');
+                    }
+                });
+            });
+        });
+
+        function testEndpoint(type, input, responseId, queryId, resultId, loadingId) {
+            const resultDiv = document.getElementById(resultId);
+            const loadingDiv = document.getElementById(loadingId);
+            resultDiv.classList.add('d-none');
+            loadingDiv.style.display = 'block';
+
+            fetch(`/query/${type}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ chat_input: input })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Format the JSON response for better readability
+                const formattedResponse = JSON.stringify(data, null, 2);
+                document.getElementById(responseId).textContent = formattedResponse;
+                
+                if (queryId && data.query_executed) {
+                    document.getElementById(queryId).textContent = data.query_executed;
+                }
+                
+                resultDiv.classList.remove('d-none');
+                loadingDiv.style.display = 'none';
+            })
+            .catch(error => {
+                document.getElementById(responseId).textContent = `Error: ${error.message}`;
+                resultDiv.classList.remove('d-none');
+                loadingDiv.style.display = 'none';
+            });
+        }
+
+        function resetDatabase() {
+            if (confirm('Are you sure you want to reset the database? This will restore default values.')) {
+                fetch('/reset', { method: 'GET' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                    })
+                    .catch(error => {
+                        console.error('Error resetting database:', error);
+                        alert('Failed to reset database. Please check the console for details.');
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
