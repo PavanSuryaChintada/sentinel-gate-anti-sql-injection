@@ -77,12 +77,11 @@ def query_vulnerable():
         }), 400
 
     user_input = request.json.get('chat_input', '')
-    
+    query = f"SELECT * FROM secrets WHERE name = '{user_input}'"
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
             # DANGER: This is vulnerable to SQL Injection!
-            query = f"SELECT * FROM secrets WHERE name = '{user_input}'"
             cursor.execute(query)
             result = [dict(row) for row in cursor.fetchall()]
             return jsonify({
