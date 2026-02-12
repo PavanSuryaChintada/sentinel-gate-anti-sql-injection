@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>SQL Injection Demo | SentinelGate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -112,6 +115,24 @@
             padding: 2rem 0;
             margin-top: 3rem;
         }
+
+        /* Chatbot Demo Modal */
+        #chatbotModal .modal-dialog { max-width: 700px; }
+        .chatbot-card { cursor: pointer; transition: all 0.2s; }
+        .chatbot-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .chatbot-card.secured { border: 2px solid var(--success-color); }
+        .chatbot-card.secured .card-header { background: var(--success-color); color: white; }
+        .chatbot-card.unsecured { border: 2px solid var(--danger-color); }
+        .chatbot-card.unsecured .card-header { background: var(--danger-color); color: white; }
+        #chatbotChatView { display: none; }
+        #chatbotChatView.active { display: block; }
+        #chatbotCardsView { display: block; }
+        #chatbotCardsView.hidden { display: none; }
+        .chat-messages { max-height: 350px; overflow-y: auto; padding: 1rem; background: #f8f9fa; border-radius: 8px; }
+        .chat-msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 8px; max-width: 85%; }
+        .chat-msg.user { background: var(--primary-color); color: white; margin-left: auto; }
+        .chat-msg.bot { background: white; border: 1px solid #dee2e6; }
+        .chat-input-group { margin-top: 0.5rem; }
     </style>
 </head>
 <body>
@@ -121,9 +142,23 @@
             <a class="navbar-brand" href="#">
                 <i class="bi bi-shield-lock-fill me-2"></i>SentinelGate
             </a>
-            <button class="btn btn-outline-primary btn-sm" onclick="resetDatabase()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Database
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <button class="btn btn-success btn-sm me-2" onclick="openChatbotDemo()">
+                            <i class="bi bi-chat-dots-fill"></i> Chatbot Demo
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-primary btn-sm" onclick="resetDatabase()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset Database
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -131,6 +166,9 @@
         <div class="text-center mb-5">
             <h1 class="display-5 fw-bold mb-3">SQL Injection Demo</h1>
             <p class="lead text-muted">A demonstration of SQL injection vulnerabilities and secure coding practices</p>
+            <button class="btn btn-success btn-lg mt-3" onclick="openChatbotDemo()">
+                <i class="bi bi-chat-dots-fill me-2"></i>Chatbot Demo
+            </button>
         </div>
 
         <div class="row g-4">
@@ -292,6 +330,58 @@ cursor.execute(query, (user_input,))</pre>
         </div>
     </div>
 
+    <!-- Chatbot Demo Modal -->
+    <div class="modal fade" id="chatbotModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-chat-dots-fill me-2"></i>Chatbot Demo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chatbotCardsView">
+                        <p class="text-muted mb-4">Choose a chatbot to test. The secured chatbot blocks SQL and prompt injection; the unsecured one does not.</p>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="card chatbot-card secured h-100" onclick="openChatbot('secured')">
+                                    <div class="card-header fw-bold">
+                                        <i class="bi bi-shield-check-fill me-2"></i>Secured Chatbot
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-0 small">Protected against SQL & prompt injection. Try it!</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card chatbot-card unsecured h-100" onclick="openChatbot('unsecured')">
+                                    <div class="card-header fw-bold">
+                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Unsecured Chatbot
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-0 small">Vulnerable to injection. For demo only.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chatbotChatView" class="position-relative">
+                        <button type="button" class="btn btn-sm btn-outline-secondary mb-2" onclick="backToChatbotCards()">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </button>
+                        <div id="chatbotLabel" class="badge mb-2"></div>
+                        <div class="chat-messages" id="chatMessages"></div>
+                        <div class="chat-input-group input-group">
+                            <input type="text" class="form-control" id="chatInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter')sendChatMessage()">
+                            <button class="btn btn-primary" onclick="sendChatMessage()">
+                                <i class="bi bi-send-fill"></i> Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer mt-5">
         <div class="container text-center">
@@ -388,6 +478,81 @@ cursor.execute(query, (user_input,))</pre>
                         alert('Failed to reset database. Please check the console for details.');
                     });
             }
+        }
+
+        // Chatbot Demo
+        let activeChatbot = null;
+        const chatbotModal = new bootstrap.Modal(document.getElementById('chatbotModal'));
+
+        function openChatbotDemo() {
+            activeChatbot = null;
+            document.getElementById('chatbotCardsView').classList.remove('hidden');
+            document.getElementById('chatbotChatView').classList.remove('active');
+            document.getElementById('chatMessages').innerHTML = '';
+            document.getElementById('chatInput').value = '';
+            chatbotModal.show();
+        }
+
+        function openChatbot(type) {
+            activeChatbot = type;
+            document.getElementById('chatbotCardsView').classList.add('hidden');
+            document.getElementById('chatbotChatView').classList.add('active');
+            document.getElementById('chatMessages').innerHTML = '';
+            document.getElementById('chatInput').value = '';
+            const label = document.getElementById('chatbotLabel');
+            if (type === 'secured') {
+                label.className = 'badge mb-2 bg-success';
+                label.textContent = 'Secured Chatbot';
+            } else {
+                label.className = 'badge mb-2 bg-danger';
+                label.textContent = 'Unsecured Chatbot';
+            }
+            addBotMessage('Hello! I\'m the ' + (type === 'secured' ? 'secured' : 'unsecured') + ' chatbot. Ask me anything or try requesting user data (e.g., Admin, User1).');
+        }
+
+        function backToChatbotCards() {
+            activeChatbot = null;
+            document.getElementById('chatbotCardsView').classList.remove('hidden');
+            document.getElementById('chatbotChatView').classList.remove('active');
+        }
+
+        function addBotMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'chat-msg bot';
+            div.textContent = text;
+            div.style.whiteSpace = 'pre-wrap';
+            document.getElementById('chatMessages').appendChild(div);
+            div.scrollIntoView();
+        }
+
+        function addUserMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'chat-msg user';
+            div.textContent = text;
+            document.getElementById('chatMessages').appendChild(div);
+            div.scrollIntoView();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg || !activeChatbot) return;
+            input.value = '';
+            addUserMessage(msg);
+            const endpoint = '/chat/' + activeChatbot;
+            fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            })
+            .then(r => r.json())
+            .then(data => {
+                const response = data.response || data.message || 'No response.';
+                addBotMessage(response);
+            })
+            .catch(err => {
+                addBotMessage('Error: ' + err.message);
+            });
         }
     </script>
 </body>
