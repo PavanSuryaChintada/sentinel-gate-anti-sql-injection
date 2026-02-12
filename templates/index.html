@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Template version: navbar-buttons-removed-20240212 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -133,32 +134,17 @@
         .chat-msg.user { background: var(--primary-color); color: white; margin-left: auto; }
         .chat-msg.bot { background: white; border: 1px solid #dee2e6; }
         .chat-input-group { margin-top: 0.5rem; }
+        /* Hide any injected buttons in navbar - navbar intentionally has no buttons */
+        nav.navbar button { display: none !important; }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+    <!-- Navigation - no buttons (v2) -->
+    <nav class="navbar navbar-light bg-white shadow-sm mb-4">
         <div class="container">
             <a class="navbar-brand" href="#">
                 <i class="bi bi-shield-lock-fill me-2"></i>SentinelGate
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <button class="btn btn-success btn-sm me-2" onclick="openChatbotDemo()">
-                            <i class="bi bi-chat-dots-fill"></i> Chatbot Demo
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-outline-primary btn-sm" onclick="resetDatabase()">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reset Database
-                        </button>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 
@@ -166,9 +152,6 @@
         <div class="text-center mb-5">
             <h1 class="display-5 fw-bold mb-3">SQL Injection Demo</h1>
             <p class="lead text-muted">A demonstration of SQL injection vulnerabilities and secure coding practices</p>
-            <button class="btn btn-success btn-lg mt-3" onclick="openChatbotDemo()">
-                <i class="bi bi-chat-dots-fill me-2"></i>Chatbot Demo
-            </button>
         </div>
 
         <div class="row g-4">
@@ -395,6 +378,18 @@ cursor.execute(query, (user_input,))</pre>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Remove any injected buttons from navbar (navbar has no buttons in source)
+            function removeNavbarButtons() {
+                var nav = document.querySelector('nav.navbar');
+                if (nav) {
+                    var btns = nav.querySelectorAll('button');
+                    btns.forEach(function(b) { b.remove(); });
+                }
+            }
+            removeNavbarButtons();
+            var obs = new MutationObserver(removeNavbarButtons);
+            var nav = document.querySelector('nav.navbar');
+            if (nav) obs.observe(nav, { childList: true, subtree: true });
             // Handle form submissions
             document.getElementById('vulnerableForm').addEventListener('submit', function(e) {
                 e.preventDefault();

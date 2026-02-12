@@ -55,9 +55,17 @@ def limit_requests(f):
     return decorated_function
 
 # Routes
+@app.route('/version')
+def version():
+    return jsonify({"version": "v2-no-navbar-buttons", "template": "index.html"})
+
 @app.route('/')
 def home():
-    return render_template('index.html')
+    resp = app.make_response(render_template('index.html'))
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
 
 @app.route('/query/vulnerable', methods=['POST'])
 @limit_requests
