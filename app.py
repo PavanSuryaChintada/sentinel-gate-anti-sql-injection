@@ -169,17 +169,17 @@ def get_general_response(user_input):
     """Simple intelligent responses for general chat (demo - can be replaced with LLM API)"""
     inp = user_input.lower().strip()
     if any(g in inp for g in ['hello', 'hi', 'hey', 'greetings']):
-        return "Hello! I'm here to help. You can ask me questions or request user data by name."
+        return "Hello! I'm here to help. How can I assist you today?"
     if any(g in inp for g in ['help', 'what can you']):
-        return "I can help you look up user information. Try asking for a username like 'Admin' or 'User1'. I can also answer general questions!"
+        return "I'm a secure chatbot assistant. I can help answer general questions and provide information about our services."
     if any(g in inp for g in ['thanks', 'thank you']):
         return "You're welcome! Let me know if you need anything else."
     if any(g in inp for g in ['who are you', 'what are you']):
-        return "I'm a database assistant chatbot. I help retrieve user information from the system."
+        return "I'm a secure chatbot designed to assist with general inquiries while maintaining strict data protection standards."
     if any(g in inp for g in ['bye', 'goodbye']):
         return "Goodbye! Stay secure!"
     # Default contextual response
-    return f"I understand you're asking about: \"{user_input[:50]}...\" if applicable. For user data, try asking for a specific username like Admin, User1, or Support."
+    return "I understand you're asking about: \"{0}\". How can I assist you with this?".format(user_input[:50] + '...' if len(user_input) > 50 else user_input)
 
 def extract_username_for_lookup(text):
     """Extract username from phrases like 'get Admin' or 'show User1 data'"""
@@ -231,49 +231,40 @@ def chat_unsecured():
 @app.route('/chat/secured', methods=['POST'])
 @limit_requests
 def chat_secured():
-    """Secured chatbot - protected against SQL injection and prompt injection"""
+    """Secured chatbot - protected against data leaks and injection attacks"""
     if not request.is_json:
         return jsonify({"status": "error", "message": "Request must be JSON"}), 400
+    
     user_input = request.json.get('message', '').strip()
     if not user_input:
         return jsonify({"status": "error", "message": "Empty message"}), 400
 
-    # BLOCK: Refuse SQL injection attempts
-    if is_sql_injection(user_input):
+    # Block any attempts that look like data access or injection
+    is_data_request = any(kw in user_input.lower() for kw in [
+        'get', 'find', 'show', 'lookup', 'data', 'info', 'password', 'secret',
+        'select', 'insert', 'update', 'delete', 'drop', 'alter', 'create',
+        'admin', 'user', 'support', 'name', 'id', 'row', 'table', 'database',
+        'secret', 'password', 'credential', 'login', 'authenticate', 'auth'
+    ])
+
+    # Always return a generic response for data-related queries
+    if is_data_request or is_sql_injection(user_input) or is_prompt_injection(user_input):
+        # Log the attempt (in production, you'd want to log this to a secure log)
+        app.logger.warning(f"Blocked potential data access attempt: {user_input[:100]}")
+        
+        # Return a generic response without revealing any system information
         return jsonify({
             "status": "success",
-            "response": "I cannot process that request. It appears to contain potentially malicious SQL patterns. For security reasons, I only accept simple username lookups (e.g., 'Admin', 'User1')."
+            "response": "I'm sorry, but I can't assist with that request. " \
+                       "If you need help, please contact our support team directly."
         })
 
-    # BLOCK: Refuse prompt injection attempts
-    if is_prompt_injection(user_input):
-        return jsonify({
-            "status": "success",
-            "response": "I cannot comply with that request. It looks like an attempt to manipulate my instructions. I'm designed to help with legitimate user data lookups only."
-        })
-
-    # Allow only simple alphanumeric usernames for lookup
-    is_safe_lookup = user_input.isalnum() or (user_input.replace(' ', '').isalnum() and len(user_input) < 20)
-    is_lookup = any(kw in user_input.lower() for kw in ['get', 'find', 'show', 'lookup', 'data']) or is_safe_lookup
-
-    if is_lookup and is_safe_lookup:
-        try:
-            with get_db_connection() as conn:
-                cursor = conn.cursor()
-                query = "SELECT * FROM secrets WHERE name = ?"
-                cursor.execute(query, (user_input,))
-                result = [dict(row) for row in cursor.fetchall()]
-                if result:
-                    response = f"Here is the data for {user_input}:\n" + "\n".join(
-                        [f"- {r['name']}: {r['data']}" for r in result]
-                    )
-                    return jsonify({"status": "success", "response": response})
-                elif user_input in ['Admin', 'User1', 'Support']:
-                    return jsonify({"status": "success", "response": f"No record found for '{user_input}'."})
-        except Exception as e:
-            return jsonify({"status": "error", "response": str(e)}), 400
-
-    return jsonify({"status": "success", "response": get_general_response(user_input)})
+    # For all other inputs, provide a general response without accessing the database
+    response = get_general_response(user_input)
+    return jsonify({
+        "status": "success",
+        "response": response
+    })
 
 @app.route('/reset', methods=['GET'])
 def reset_db():
