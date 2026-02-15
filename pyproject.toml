@@ -5,3 +5,6 @@ requires-python = ">=3.8"
 dependencies = [
     "flask>=3.0",
 ]
+
+[project.scripts]
+app = "app:app"

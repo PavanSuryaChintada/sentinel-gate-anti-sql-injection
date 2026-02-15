@@ -1,0 +1,7 @@
+# Render.com deployment - reliable alternative to Vercel for Flask
+services:
+  - type: web
+    name: sentinelgate
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 1 -b 0.0.0.0:$PORT app:app
