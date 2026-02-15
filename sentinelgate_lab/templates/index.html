@@ -151,6 +151,38 @@
         .test-case-card.malicious { border-left-color: #dc3545; }
         .test-case-card.nonexistent { border-left-color: #0dcaf0; }
         .test-case-card.always-true { border-left-color: #ffc107; }
+
+        /* Dark mode */
+        html[data-theme="dark"] {
+            --primary-color: #6c8ef5;
+            --danger-color: #f06b8a;
+            --success-color: #2ee7b6;
+            --dark-color: #e9ecef;
+            --light-color: #212529;
+        }
+        html[data-theme="dark"] body {
+            background-color: #121212;
+            color: #e9ecef;
+        }
+        html[data-theme="dark"] .navbar { background-color: #1e1e1e !important; }
+        html[data-theme="dark"] .card { background-color: #1e1e1e; color: #e9ecef; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        html[data-theme="dark"] .card:hover { box-shadow: 0 8px 15px rgba(0,0,0,0.4); }
+        html[data-theme="dark"] .form-control, html[data-theme="dark"] .input-group-text { background-color: #2d2d2d; border-color: #444; color: #e9ecef; }
+        html[data-theme="dark"] .form-control::placeholder { color: #868e96; }
+        html[data-theme="dark"] pre { background-color: #2d2d2d; color: #e9ecef; }
+        html[data-theme="dark"] .chat-messages { background: #2d2d2d !important; }
+        html[data-theme="dark"] .chat-msg.bot { background: #2d2d2d; border-color: #444; color: #e9ecef; }
+        html[data-theme="dark"] .explanation-panel { background: #2d2d2d; border-color: #444; color: #e9ecef; }
+        html[data-theme="dark"] .accordion-item { background-color: #1e1e1e; border-color: #444; }
+        html[data-theme="dark"] .accordion-button { background-color: #2d2d2d; color: #e9ecef; border-color: #444; }
+        html[data-theme="dark"] .accordion-button:not(.collapsed) { background-color: #363636; color: #e9ecef; }
+        html[data-theme="dark"] .accordion-body { background-color: #1e1e1e; color: #e9ecef; }
+        html[data-theme="dark"] .modal-content { background-color: #1e1e1e; color: #e9ecef; }
+        html[data-theme="dark"] .modal-header, html[data-theme="dark"] .modal-header .btn-close { border-color: #444; }
+        html[data-theme="dark"] .text-muted { color: #adb5bd !important; }
+        html[data-theme="dark"] .footer { background-color: #0d0d0d; }
+        html[data-theme="dark"] .bg-light { background-color: #2d2d2d !important; }
+        html[data-theme="dark"] .bg-dark { background-color: #1a1a1a !important; }
     </style>
 </head>
 <body>
@@ -160,7 +192,11 @@
             <a class="navbar-brand" href="#">
                 <i class="bi bi-shield-lock-fill me-2"></i>SentinelGate
             </a>
-            <div style="display: flex; gap: 8px; flex-shrink: 0;">
+            <div style="display: flex; gap: 8px; flex-shrink: 0; align-items: center;">
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                    <span id="themeLabel">Dark</span>
+                </button>
                 <button type="button" class="btn btn-outline-primary" onclick="resetDatabase()">
                     <i class="bi bi-arrow-counterclockwise"></i> Reset Database
                 </button>
@@ -172,13 +208,15 @@
         <div class="text-center mb-5">
             <h1 class="display-5 fw-bold mb-3">SQL Injection Demo</h1>
             <p class="lead text-muted">A demonstration of SQL injection vulnerabilities and secure coding practices</p>
-            <button class="btn btn-success btn-lg mt-3" onclick="openChatbotDemo()">
-                <i class="bi bi-chat-dots-fill me-2"></i>Chatbot Demo
-            </button>
-            <button type="button" class="explanation-btn info mt-2" data-bs-toggle="collapse" data-bs-target="#chatbotExplain">
-                <i class="bi bi-info-circle"></i> What is the Chatbot Demo?
-            </button>
-            <div class="collapse mt-2" id="chatbotExplain">
+            <div class="d-flex flex-column align-items-center gap-2 mt-3">
+                <button class="btn btn-success btn-lg" onclick="openChatbotDemo()">
+                    <i class="bi bi-chat-dots-fill me-2"></i>Chatbot Demo
+                </button>
+                <button type="button" class="explanation-btn info" data-bs-toggle="collapse" data-bs-target="#chatbotExplain">
+                    <i class="bi bi-info-circle"></i> What is the Chatbot Demo?
+                </button>
+            </div>
+            <div class="collapse mt-2 mx-auto" id="chatbotExplain" style="max-width: 600px;">
                 <div class="explanation-panel">
                     <p class="mb-0">Compare <strong>Secured</strong> vs <strong>Unsecured</strong> chatbots. The unsecured chatbot executes user input as SQL and leaks all secrets when given injection payloads. The secured chatbot refuses all data requests and blocks SQL/prompt injection attempts. Use this to see how AI assistants can be vulnerable to prompt injection and data exfiltration.</p>
                 </div>
@@ -551,6 +589,30 @@ cursor.execute(query, (user_input,))</pre>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                html.removeAttribute('data-theme');
+                document.getElementById('themeIcon').className = 'bi bi-moon-stars-fill';
+                document.getElementById('themeLabel').textContent = 'Dark';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                document.getElementById('themeIcon').className = 'bi bi-sun-fill';
+                document.getElementById('themeLabel').textContent = 'Light';
+            }
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+        function initTheme() {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('themeIcon').className = 'bi bi-sun-fill';
+                document.getElementById('themeLabel').textContent = 'Light';
+            }
+        }
+        initTheme();
+
         document.addEventListener('DOMContentLoaded', function() {
             // Handle form submissions
             document.getElementById('vulnerableForm').addEventListener('submit', function(e) {
