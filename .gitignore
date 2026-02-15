@@ -1,6 +1,7 @@
 # Python
 venv/
 .venv/
+debug_navbar.log
 __pycache__/
 *.py[cod]
 *.pyo
