@@ -12,13 +12,25 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secure-secret-key-
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 # Database path: use /tmp on Vercel (serverless filesystem is read-only except /tmp)
-_db_path = os.path.join('/tmp', 'users.db') if os.environ.get('VERCEL') else 'users.db'
+# Locally use absolute path to avoid CWD-dependent behavior
+_db_path = os.path.join('/tmp', 'users.db') if os.environ.get('VERCEL') else os.path.join(_basedir, 'users.db')
 
 # Database initialization
 def get_db_connection():
     conn = sqlite3.connect(_db_path)
     conn.row_factory = sqlite3.Row
     return conn
+
+def ensure_db_ready():
+    """Ensure secrets table has data (handles Vercel cold starts where /tmp is empty)."""
+    try:
+        with get_db_connection() as conn:
+            c = conn.cursor()
+            c.execute("SELECT COUNT(*) FROM secrets")
+            if c.fetchone()[0] == 0:
+                init_db()
+    except sqlite3.OperationalError:
+        init_db()
 
 def init_db():
     with get_db_connection() as conn:
@@ -32,11 +44,23 @@ def init_db():
         ''')
         # Clear existing data
         c.execute("DELETE FROM secrets")
-        # Insert default data
+        # Insert demo data: employees, credentials, API keys (simulated company)
         default_data = [
             (1, 'Admin', 'SUPER_SECRET_PASSWORD_123'),
-            (2, 'User1', 'just_a_normal_data'),
-            (3, 'Support', 'helpdesk_access_2024')
+            (2, 'CEO', 'executive_dashboard_key_9x7k2'),
+            (3, 'CTO', 'github_token_ghp_abc123xyz'),
+            (4, 'CFO', 'financial_reports_2024_q4'),
+            (5, 'HR', 'employee_salaries_confidential'),
+            (6, 'Support', 'helpdesk_access_2024'),
+            (7, 'Developer', 'staging_db_password_dev123'),
+            (8, 'QA', 'test_credentials_qa_env'),
+            (9, 'Sales', 'crm_api_key_salesforce_xyz'),
+            (10, 'Marketing', 'google_ads_token_mkt2024'),
+            (11, 'DevOps', 'aws_access_key_AKIA_demo'),
+            (12, 'Intern', 'onboarding_temp_pass_123'),
+            (13, 'Contractor', 'vpn_access_exp_2025'),
+            (14, 'Manager', 'team_performance_data_q4'),
+            (15, 'Analyst', 'bi_dashboard_sql_creds'),
         ]
         c.executemany("INSERT INTO secrets VALUES (?, ?, ?)", default_data)
         conn.commit()
@@ -80,6 +104,7 @@ def query_vulnerable():
             "message": "Request must be JSON"
         }), 400
 
+    ensure_db_ready()
     user_input = request.json.get('chat_input', '')
     query = f"SELECT * FROM secrets WHERE name = '{user_input}'"
     try:
@@ -110,8 +135,9 @@ def query_secure():
             "message": "Request must be JSON"
         }), 400
 
+    ensure_db_ready()
     user_input = request.json.get('chat_input', '')
-    
+    test_case = request.json.get('test_case', '')
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
@@ -119,10 +145,35 @@ def query_secure():
             query = "SELECT * FROM secrets WHERE name = ?"
             cursor.execute(query, (user_input,))
             result = [dict(row) for row in cursor.fetchall()]
+            if result:
+                messages_found = {
+                    'valid': "Valid user lookup. Sensitive data redacted—secure endpoint never exposes raw credentials.",
+                    'injection': "Query executed using parameterized statements",
+                    'malicious': "Query executed using parameterized statements",
+                    'nonexistent': "Query executed using parameterized statements",
+                    'always_true': "Query executed using parameterized statements",
+                }
+                msg = messages_found.get(test_case, "Query executed using parameterized statements")
+                # Redact sensitive "data" field—secure endpoint does not expose raw secrets
+                redacted = [{**r, "data": "[REDACTED]" if r.get("data") else r.get("data")} for r in result]
+                return jsonify({
+                    "status": "success",
+                    "data": redacted,
+                    "message": msg
+                })
+            messages_empty = {
+                'valid': "Valid user lookup. No data returned.",
+                'injection': "Cannot disclose such information. Suspected SQL injection attempt blocked.",
+                'malicious': "Cannot disclose such information. Malicious query pattern rejected.",
+                'nonexistent': "Cannot disclose whether such a user exists. This endpoint does not confirm or deny user presence.",
+                'always_true': "Cannot disclose such information. Invalid input pattern detected and blocked.",
+            }
+            msg = messages_empty.get(test_case, "Cannot disclose such information.")
             return jsonify({
                 "status": "success",
-                "data": result,
-                "message": "Query executed using parameterized statements"
+                "data": [],
+                "message": msg,
+                "user_found": False
             })
     except Exception as e:
         app.logger.error(f"Error in secure endpoint: {str(e)}")
@@ -183,11 +234,11 @@ def get_general_response(user_input):
     if any(g in inp for g in ['bye', 'goodbye']):
         return "Goodbye! Stay secure!"
     # Default contextual response
-    return f"I understand you're asking about: \"{user_input[:50]}...\" if applicable. For user data, try asking for a specific username like Admin, User1, or Support."
+    return f"I understand you're asking about: \"{user_input[:50]}...\" if applicable. For user data, try asking for a specific username like Admin, CEO, Developer, or Support."
 
 def extract_username_for_lookup(text):
     """Extract username from phrases like 'get Admin' or 'show User1 data'"""
-    known_users = ['Admin', 'User1', 'Support']
+    known_users = ['Admin', 'CEO', 'CTO', 'CFO', 'HR', 'Support', 'Developer', 'QA', 'Sales', 'Marketing', 'DevOps', 'Intern', 'Contractor', 'Manager', 'Analyst']
     for u in known_users:
         if u.lower() in text.lower():
             return u
@@ -205,7 +256,7 @@ def chat_unsecured():
 
     # Check if it's a data lookup (explicit request) or SQL injection attempt - VULNERABLE: runs either
     is_lookup = any(kw in user_input.lower() for kw in ['get', 'find', 'show', 'lookup', 'data', 'info', 'password', 'secret']) or \
-                any(name in user_input for name in ['Admin', 'User1', 'Support']) or \
+                any(name in user_input for name in ['Admin', 'CEO', 'CTO', 'CFO', 'HR', 'Support', 'Developer', 'QA', 'Sales', 'Marketing', 'DevOps', 'Intern', 'Contractor', 'Manager', 'Analyst']) or \
                 is_sql_injection(user_input)
 
     if is_lookup:
@@ -258,8 +309,8 @@ def chat_secured():
 
     # BLOCK: Secured chatbot NEVER reveals data - refuse all data lookup requests
     is_data_request = any(kw in user_input.lower() for kw in ['get', 'find', 'show', 'lookup', 'data', 'info', 'password', 'secret']) or \
-                     any(name in user_input for name in ['Admin', 'User1', 'Support']) or \
-                     (user_input.isalnum() and user_input in ['Admin', 'User1', 'Support'])
+                     any(name in user_input for name in ['Admin', 'CEO', 'CTO', 'CFO', 'HR', 'Support', 'Developer', 'QA', 'Sales', 'Marketing', 'DevOps', 'Intern', 'Contractor', 'Manager', 'Analyst']) or \
+                     (user_input.isalnum() and user_input in ['Admin', 'CEO', 'CTO', 'CFO', 'HR', 'Support', 'Developer', 'QA', 'Sales', 'Marketing', 'DevOps', 'Intern', 'Contractor', 'Manager', 'Analyst'])
 
     if is_data_request:
         return jsonify({

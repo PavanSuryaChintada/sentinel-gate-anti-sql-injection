@@ -290,7 +290,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
                                     <input type="text" class="form-control" id="secureInput" 
-                                           placeholder="Enter username" value="Admin">
+                                           placeholder="Enter username" value="Admin' OR '1'='1">
                                 </div>
                                 <div class="form-text text-success">
                                     <i class="bi bi-shield-check"></i> This endpoint is protected against SQL injection
@@ -343,18 +343,18 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="test-case-card valid p-3 rounded">
-                                    <button class="btn btn-outline-primary test-case-btn w-100 mb-2" data-vuln="Admin" data-secure="Admin">
+                                    <button class="btn btn-outline-primary test-case-btn w-100 mb-2" data-vuln="Admin" data-secure="Admin" data-test-case="valid">
                                         <i class="bi bi-person-check me-1"></i> Valid User
                                     </button>
                                     <button type="button" class="explanation-btn primary btn-sm" data-bs-toggle="collapse" data-bs-target="#explainValid"><i class="bi bi-info-circle"></i> Learn more</button>
                                     <div class="collapse mt-2" id="explainValid">
-                                        <div class="explanation-panel"><p class="mb-0 small">Legitimate lookup for a valid user. Both endpoints return Admin's data. The difference: Vulnerable builds the query with string concatenation (unsafe). Secure uses a parameterized query (safe). Same result for clean input, but only Secure is safe under attack.</p></div>
+                                        <div class="explanation-panel"><p class="mb-0 small">Legitimate lookup for "Admin". <strong>Vulnerable:</strong> Returns 1 row (works with clean input, but unsafe). <strong>Secure:</strong> Returns 1 row (safe). Same result for valid input—use injection test cases to see the vulnerability.</p></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="test-case-card injection p-3 rounded">
-                                    <button class="btn btn-outline-danger test-case-btn w-100 mb-2" data-vuln="Admin' OR '1'='1" data-secure="Admin' OR '1'='1">
+                                    <button class="btn btn-outline-danger test-case-btn w-100 mb-2" data-vuln="Admin' OR '1'='1" data-secure="Admin' OR '1'='1" data-test-case="injection">
                                         <i class="bi bi-bug me-1"></i> SQL Injection
                                     </button>
                                     <button type="button" class="explanation-btn vuln btn-sm" data-bs-toggle="collapse" data-bs-target="#explainInjection"><i class="bi bi-info-circle"></i> Learn more</button>
@@ -365,29 +365,29 @@
                             </div>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="test-case-card malicious p-3 rounded">
-                                    <button class="btn btn-outline-danger test-case-btn w-100 mb-2" data-vuln="'; DROP TABLE secrets; --" data-secure="'; DROP TABLE secrets; --">
+                                    <button class="btn btn-outline-danger test-case-btn w-100 mb-2" data-vuln="' UNION SELECT id, name, data FROM secrets --" data-secure="' UNION SELECT id, name, data FROM secrets --" data-test-case="malicious">
                                         <i class="bi bi-exclamation-octagon me-1"></i> Malicious Input
                                     </button>
                                     <button type="button" class="explanation-btn vuln btn-sm" data-bs-toggle="collapse" data-bs-target="#explainMalicious"><i class="bi bi-info-circle"></i> Learn more</button>
                                     <div class="collapse mt-2" id="explainMalicious">
-                                        <div class="explanation-panel vuln"><p class="mb-0 small"><code>;</code> ends the current SQL statement. <code>DROP TABLE secrets</code> destroys the table. <code>--</code> comments out the rest of the original query. <strong>Vulnerable:</strong> Executes the malicious SQL (in this demo, SQLite may block DROP). <strong>Secure:</strong> Input is treated as data only — no SQL execution.</p></div>
+                                        <div class="explanation-panel vuln"><p class="mb-0 small">UNION injection: <code>' UNION SELECT id, name, data FROM secrets --</code> appends a second query to dump the table. <strong>Vulnerable:</strong> Returns ALL rows (full leak). <strong>Secure:</strong> Treats input as literal string → no match, empty result.</p></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="test-case-card nonexistent p-3 rounded">
-                                    <button class="btn btn-outline-info test-case-btn w-100 mb-2" data-vuln="NonExistentUser" data-secure="NonExistentUser">
+                                    <button class="btn btn-outline-info test-case-btn w-100 mb-2" data-vuln="NonExistentUser" data-secure="NonExistentUser" data-test-case="nonexistent">
                                         <i class="bi bi-question-circle me-1"></i> Non-existent User
                                     </button>
                                     <button type="button" class="explanation-btn info btn-sm" data-bs-toggle="collapse" data-bs-target="#explainNonexistent"><i class="bi bi-info-circle"></i> Learn more</button>
                                     <div class="collapse mt-2" id="explainNonexistent">
-                                        <div class="explanation-panel"><p class="mb-0 small">Safe input with no matching user. Both endpoints return empty results. This shows normal "no results" behavior when no injection is present. Useful as a baseline to compare against injection results.</p></div>
+                                        <div class="explanation-panel"><p class="mb-0 small">No user "NonExistentUser" exists. <strong>Vulnerable:</strong> Returns 0 rows (no match). <strong>Secure:</strong> Returns 0 rows. Same for clean input—both correctly return empty. Contrast with injection cases.</p></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="test-case-card always-true p-3 rounded">
-                                    <button class="btn btn-outline-warning test-case-btn w-100 mb-2" data-vuln="' OR '1'='1" data-secure="' OR '1'='1">
+                                    <button class="btn btn-outline-warning test-case-btn w-100 mb-2" data-vuln="' OR '1'='1" data-secure="' OR '1'='1" data-test-case="always_true">
                                         <i class="bi bi-exclamation-triangle me-1"></i> Always True
                                     </button>
                                     <button type="button" class="explanation-btn info btn-sm" data-bs-toggle="collapse" data-bs-target="#explainAlwaysTrue"><i class="bi bi-info-circle"></i> Learn more</button>
@@ -395,6 +395,62 @@
                                         <div class="explanation-panel"><p class="mb-0 small">Simpler injection: <code>' OR '1'='1</code> closes the string and adds an always-true condition. No username needed. The WHERE clause becomes <code>WHERE name='' OR '1'='1'</code>. <strong>Vulnerable:</strong> Returns all rows. <strong>Secure:</strong> Searches for that exact string, finds nothing.</p></div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About the Data / Company Info Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <i class="bi bi-database-fill me-2"></i>About the Demo Data
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="bi bi-building me-2"></i>Company Overview</h5>
+                                <p class="mb-2">This demo simulates a fictional company's internal <strong>secrets</strong> table. The database stores usernames and associated sensitive data (passwords, API keys, tokens) that would never be exposed in a secure application.</p>
+                                <ul class="mb-0">
+                                    <li><strong>Table:</strong> <code>secrets</code></li>
+                                    <li><strong>Columns:</strong> <code>id</code>, <code>name</code>, <code>data</code></li>
+                                    <li><strong>Records:</strong> 15 employees across departments</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="bi bi-people-fill me-2"></i>Sample Users (try these)</h5>
+                                <div class="row g-1 small">
+                                    <div class="col-6"><code>Admin</code></div>
+                                    <div class="col-6"><code>CEO</code></div>
+                                    <div class="col-6"><code>CTO</code></div>
+                                    <div class="col-6"><code>CFO</code></div>
+                                    <div class="col-6"><code>HR</code></div>
+                                    <div class="col-6"><code>Support</code></div>
+                                    <div class="col-6"><code>Developer</code></div>
+                                    <div class="col-6"><code>QA</code></div>
+                                    <div class="col-6"><code>Sales</code></div>
+                                    <div class="col-6"><code>Marketing</code></div>
+                                    <div class="col-6"><code>DevOps</code></div>
+                                    <div class="col-6"><code>Intern</code></div>
+                                    <div class="col-6"><code>Contractor</code></div>
+                                    <div class="col-6"><code>Manager</code></div>
+                                    <div class="col-6"><code>Analyst</code></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <h5><i class="bi bi-lightbulb me-2"></i>Testing Tips</h5>
+                                <ul class="mb-0">
+                                    <li>Use any username above in the <strong>Secure</strong> panel for a valid lookup (returns 1 row).</li>
+                                    <li>Use <code>Admin' OR '1'='1</code> in the <strong>Vulnerable</strong> panel to dump all 15 records.</li>
+                                    <li>Click <strong>Reset Database</strong> in the navbar to restore the demo data if needed.</li>
+                                    <li>All data is fictional and for educational purposes only.</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -619,7 +675,7 @@ cursor.execute(query, (user_input,))</pre>
                 e.preventDefault();
                 const input = document.getElementById('vulnInput').value.trim();
                 if (input) {
-                    testEndpoint('vulnerable', input, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading');
+                    testEndpoint('vulnerable', input, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading', null);
                 }
             });
 
@@ -627,7 +683,7 @@ cursor.execute(query, (user_input,))</pre>
                 e.preventDefault();
                 const input = document.getElementById('secureInput').value.trim();
                 if (input) {
-                    testEndpoint('secure', input, 'secureResponse', null, 'secureResult', 'secureLoading');
+                    testEndpoint('secure', input, 'secureResponse', null, 'secureResult', 'secureLoading', null);
                 }
             });
 
@@ -636,6 +692,7 @@ cursor.execute(query, (user_input,))</pre>
                 button.addEventListener('click', function() {
                     const vulnInput = this.getAttribute('data-vuln');
                     const secureInput = this.getAttribute('data-secure');
+                    const testCase = this.getAttribute('data-test-case') || null;
                     
                     // Update input fields
                     document.getElementById('vulnInput').value = vulnInput;
@@ -643,27 +700,30 @@ cursor.execute(query, (user_input,))</pre>
                     
                     // Auto-submit both forms
                     if (vulnInput) {
-                        testEndpoint('vulnerable', vulnInput, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading');
+                        testEndpoint('vulnerable', vulnInput, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading', null);
                     }
                     if (secureInput) {
-                        testEndpoint('secure', secureInput, 'secureResponse', null, 'secureResult', 'secureLoading');
+                        testEndpoint('secure', secureInput, 'secureResponse', null, 'secureResult', 'secureLoading', testCase);
                     }
                 });
             });
         });
 
-        function testEndpoint(type, input, responseId, queryId, resultId, loadingId) {
+        function testEndpoint(type, input, responseId, queryId, resultId, loadingId, testCase) {
             const resultDiv = document.getElementById(resultId);
             const loadingDiv = document.getElementById(loadingId);
             resultDiv.classList.add('d-none');
             loadingDiv.style.display = 'block';
+
+            const body = { chat_input: input };
+            if (testCase) body.test_case = testCase;
 
             fetch(`/query/${type}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ chat_input: input })
+                body: JSON.stringify(body)
             })
             .then(response => response.json())
             .then(data => {
