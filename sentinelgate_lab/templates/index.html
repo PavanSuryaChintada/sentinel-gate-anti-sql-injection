@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -152,6 +152,35 @@
         .test-case-card.nonexistent { border-left-color: #0dcaf0; }
         .test-case-card.always-true { border-left-color: #ffc107; }
 
+        /* Database Schema Section - Professional */
+        #database-schema { scroll-margin-top: 1rem; }
+        .schema-card { border-left: 4px solid var(--primary-color); }
+        .schema-table { font-size: 0.9rem; }
+        .schema-table thead th { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+        .schema-table .table-name { font-weight: 700; color: var(--primary-color); font-family: 'Consolas', 'Monaco', monospace; }
+        .schema-table .col-type { font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85em; color: #6c757d; }
+        .lookup-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin: 0.15rem; }
+        .lookup-badge.secrets { background: rgba(239,71,111,0.15); color: var(--danger-color); }
+        .lookup-badge.departments { background: rgba(67,97,238,0.15); color: var(--primary-color); }
+        .lookup-badge.projects { background: rgba(6,214,160,0.15); color: #0d6b4d; }
+        .lookup-badge.offices { background: rgba(13,202,240,0.15); color: #0dcaf0; }
+        .lookup-values-box { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+        .section-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #6c757d; font-weight: 600; margin-bottom: 0.5rem; }
+
+        /* Schema dropdown & row hover */
+        .schema-select-wrapper { max-width: 280px; }
+        .schema-panel { display: none; animation: fadeIn 0.25s ease; }
+        .schema-panel.active { display: block; }
+        .schema-panel .table { border-radius: 8px; overflow: hidden; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .schema-row { transition: background-color 0.2s ease, border-left-color 0.2s ease; cursor: default; border-left: 3px solid transparent; }
+        .schema-row:hover { background-color: rgba(67,97,238,0.08) !important; border-left-color: var(--primary-color); }
+        .schema-row td { padding: 0.75rem 1rem; vertical-align: middle !important; }
+        .schema-row .col-name { font-family: 'Consolas', 'Monaco', monospace; font-weight: 600; }
+        .schema-row .col-desc { color: #6c757d; font-size: 0.9rem; }
+        .lookup-col { font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85em; color: var(--success-color); font-weight: 500; }
+        .schema-table thead th { background: #f8f9fa; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.65rem 1rem; }
+
         /* Dark mode */
         html[data-theme="dark"] {
             --primary-color: #6c8ef5;
@@ -183,16 +212,30 @@
         html[data-theme="dark"] .footer { background-color: #0d0d0d; }
         html[data-theme="dark"] .bg-light { background-color: #2d2d2d !important; }
         html[data-theme="dark"] .bg-dark { background-color: #1a1a1a !important; }
+        html[data-theme="dark"] .table { --bs-table-bg: #2d2d2d; --bs-table-color: #e9ecef; border-color: #444; }
+        html[data-theme="dark"] .table-light { --bs-table-bg: #363636; --bs-table-color: #e9ecef; }
+        html[data-theme="dark"] .schema-card { border-left-color: #6c8ef5; }
+        html[data-theme="dark"] .schema-table .table-name { color: #6c8ef5; }
+        html[data-theme="dark"] .schema-table .col-type { color: #adb5bd; }
+        html[data-theme="dark"] .schema-card .card-header { background: linear-gradient(135deg, #1a4d6e 0%, #0d3d56 100%) !important; }
+        html[data-theme="dark"] .schema-card .card-header .badge { background-color: #2d2d2d !important; color: #e9ecef !important; }
+        html[data-theme="dark"] .schema-row:hover { background-color: rgba(108,142,245,0.12) !important; border-left-color: #6c8ef5; }
+        html[data-theme="dark"] .schema-row .col-desc { color: #adb5bd; }
+        html[data-theme="dark"] .schema-row .lookup-col { color: #2ee7b6; }
+        html[data-theme="dark"] .schema-table thead th { background: #2d2d2d; color: #e9ecef; }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-light bg-white shadow-sm mb-4">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 py-3">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
             <a class="navbar-brand" href="#">
                 <i class="bi bi-shield-lock-fill me-2"></i>SentinelGate
             </a>
-            <div style="display: flex; gap: 8px; flex-shrink: 0; align-items: center;">
+            <div class="d-flex gap-2 flex-shrink-0 align-items-center">
+                <a href="#database-schema" class="btn btn-outline-secondary btn-sm" title="View database schema">
+                    <i class="bi bi-database-gear"></i> Schema
+                </a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">
                     <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                     <span id="themeLabel">Dark</span>
@@ -208,6 +251,9 @@
         <div class="text-center mb-5">
             <h1 class="display-5 fw-bold mb-3">SQL Injection Demo</h1>
             <p class="lead text-muted">A demonstration of SQL injection vulnerabilities and secure coding practices</p>
+            <a href="#database-schema" class="btn btn-outline-secondary btn-sm mt-2">
+                <i class="bi bi-database-gear me-1"></i>View Database Schema
+            </a>
             <div class="d-flex flex-column align-items-center gap-2 mt-3">
                 <button class="btn btn-success btn-lg" onclick="openChatbotDemo()">
                     <i class="bi bi-chat-dots-fill me-2"></i>Chatbot Demo
@@ -233,9 +279,18 @@
                     <div class="card-body">
                         <form id="vulnerableForm" class="mb-4">
                             <div class="mb-3">
-                                <label for="vulnInput" class="form-label fw-bold">Username</label>
+                                <label for="vulnTable" class="form-label fw-bold">Table</label>
+                                <select class="form-select mb-2" id="vulnTable" onchange="updateVulnPlaceholder()">
+                                    <option value="secrets">secrets</option>
+                                    <option value="departments">departments</option>
+                                    <option value="projects">projects</option>
+                                    <option value="office_locations">office_locations</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="vulnInput" class="form-label fw-bold" id="vulnLabel">Lookup value</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
                                     <input type="text" class="form-control" id="vulnInput" 
                                            placeholder="Enter username" value="Admin' OR '1'='1">
                                 </div>
@@ -286,9 +341,18 @@
                     <div class="card-body">
                         <form id="secureForm" class="mb-4">
                             <div class="mb-3">
-                                <label for="secureInput" class="form-label fw-bold">Username</label>
+                                <label for="secureTable" class="form-label fw-bold">Table</label>
+                                <select class="form-select mb-2" id="secureTable" onchange="updateSecurePlaceholder()">
+                                    <option value="secrets">secrets</option>
+                                    <option value="departments">departments</option>
+                                    <option value="projects">projects</option>
+                                    <option value="office_locations">office_locations</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="secureInput" class="form-label fw-bold" id="secureLabel">Lookup value</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
                                     <input type="text" class="form-control" id="secureInput" 
                                            placeholder="Enter username" value="Admin' OR '1'='1">
                                 </div>
@@ -402,53 +466,125 @@
             </div>
         </div>
 
-        <!-- About the Data / Company Info Section -->
-        <div class="row mt-4">
+        <!-- Database Schema & Demo Data Section -->
+        <div class="row mt-5" id="database-schema">
             <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <i class="bi bi-database-fill me-2"></i>About the Demo Data
+                <div class="card schema-card shadow-sm">
+                    <div class="card-header d-flex align-items-center justify-content-between py-3" style="background: linear-gradient(135deg, #0dcaf0 0%, #0a8ec2 100%); border: none;">
+                        <div>
+                            <span class="section-label text-white">Database</span>
+                            <h5 class="mb-0 text-white fw-bold"><i class="bi bi-database-fill-gear me-2"></i>Schema & Demo Data</h5>
+                        </div>
+                        <span class="badge bg-white text-dark px-3 py-2">4 Tables</span>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5><i class="bi bi-building me-2"></i>Company Overview</h5>
-                                <p class="mb-2">This demo simulates a fictional company's internal <strong>secrets</strong> table. The database stores usernames and associated sensitive data (passwords, API keys, tokens) that would never be exposed in a secure application.</p>
-                                <ul class="mb-0">
-                                    <li><strong>Table:</strong> <code>secrets</code></li>
-                                    <li><strong>Columns:</strong> <code>id</code>, <code>name</code>, <code>data</code></li>
-                                    <li><strong>Records:</strong> 15 employees across departments</li>
-                                </ul>
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-4">This demo simulates a fictional company database. Select a table below to view its schema, or use the <strong>Table</strong> dropdown in the query panels above.</p>
+                        
+                        <div class="section-label mb-2">Select Table</div>
+                        <div class="schema-select-wrapper mb-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-table"></i></span>
+                                <select class="form-select" id="schemaTableSelect" onchange="showSchemaPanel(this.value)">
+                                    <option value="secrets">secrets</option>
+                                    <option value="departments">departments</option>
+                                    <option value="projects">projects</option>
+                                    <option value="office_locations">office_locations</option>
+                                </select>
                             </div>
-                            <div class="col-md-6">
-                                <h5><i class="bi bi-people-fill me-2"></i>Sample Users (try these)</h5>
-                                <div class="row g-1 small">
-                                    <div class="col-6"><code>Admin</code></div>
-                                    <div class="col-6"><code>CEO</code></div>
-                                    <div class="col-6"><code>CTO</code></div>
-                                    <div class="col-6"><code>CFO</code></div>
-                                    <div class="col-6"><code>HR</code></div>
-                                    <div class="col-6"><code>Support</code></div>
-                                    <div class="col-6"><code>Developer</code></div>
-                                    <div class="col-6"><code>QA</code></div>
-                                    <div class="col-6"><code>Sales</code></div>
-                                    <div class="col-6"><code>Marketing</code></div>
-                                    <div class="col-6"><code>DevOps</code></div>
-                                    <div class="col-6"><code>Intern</code></div>
-                                    <div class="col-6"><code>Contractor</code></div>
-                                    <div class="col-6"><code>Manager</code></div>
-                                    <div class="col-6"><code>Analyst</code></div>
+                        </div>
+
+                        <div class="section-label mb-2">Schema Definition</div>
+                        <div class="table-responsive mb-4">
+                            <!-- secrets -->
+                            <div id="schema-secrets" class="schema-panel active">
+                                <table class="table table-bordered schema-table mb-0">
+                                    <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Lookup</th></tr></thead>
+                                    <tbody>
+                                        <tr class="schema-row" title="Unique identifier for each record"><td class="col-name">id</td><td class="col-type">INTEGER</td><td class="col-desc">Primary key</td><td rowspan="3" class="lookup-col align-middle">name</td></tr>
+                                        <tr class="schema-row" title="Employee or role name used for lookup"><td class="col-name">name</td><td class="col-type">TEXT</td><td class="col-desc">Employee/role name</td></tr>
+                                        <tr class="schema-row" title="Sensitive credentials - passwords, API keys, tokens"><td class="col-name">data</td><td class="col-type">TEXT</td><td class="col-desc">Sensitive credentials (passwords, API keys)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- departments -->
+                            <div id="schema-departments" class="schema-panel">
+                                <table class="table table-bordered schema-table mb-0">
+                                    <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Lookup</th></tr></thead>
+                                    <tbody>
+                                        <tr class="schema-row" title="Unique identifier"><td class="col-name">id</td><td class="col-type">INTEGER</td><td class="col-desc">Primary key</td><td rowspan="5" class="lookup-col align-middle">name</td></tr>
+                                        <tr class="schema-row" title="Department name for queries"><td class="col-name">name</td><td class="col-type">TEXT</td><td class="col-desc">Department name</td></tr>
+                                        <tr class="schema-row" title="Person managing the department"><td class="col-name">manager</td><td class="col-type">TEXT</td><td class="col-desc">Department manager</td></tr>
+                                        <tr class="schema-row" title="Annual budget in currency"><td class="col-name">budget</td><td class="col-type">REAL</td><td class="col-desc">Annual budget</td></tr>
+                                        <tr class="schema-row" title="Number of employees in department"><td class="col-name">headcount</td><td class="col-type">INTEGER</td><td class="col-desc">Number of employees</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- projects -->
+                            <div id="schema-projects" class="schema-panel">
+                                <table class="table table-bordered schema-table mb-0">
+                                    <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Lookup</th></tr></thead>
+                                    <tbody>
+                                        <tr class="schema-row" title="Unique identifier"><td class="col-name">id</td><td class="col-type">INTEGER</td><td class="col-desc">Primary key</td><td rowspan="6" class="lookup-col align-middle">name</td></tr>
+                                        <tr class="schema-row" title="Project name for queries"><td class="col-name">name</td><td class="col-type">TEXT</td><td class="col-desc">Project name</td></tr>
+                                        <tr class="schema-row" title="Links to departments.id"><td class="col-name">department_id</td><td class="col-type">INTEGER</td><td class="col-desc">FK → departments.id</td></tr>
+                                        <tr class="schema-row" title="active, completed, or planning"><td class="col-name">status</td><td class="col-type">TEXT</td><td class="col-desc">active, completed, planning</td></tr>
+                                        <tr class="schema-row" title="Project budget in currency"><td class="col-name">budget</td><td class="col-type">REAL</td><td class="col-desc">Project budget</td></tr>
+                                        <tr class="schema-row" title="Target completion date (YYYY-MM-DD)"><td class="col-name">deadline</td><td class="col-type">TEXT</td><td class="col-desc">Target date (YYYY-MM-DD)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- office_locations -->
+                            <div id="schema-office_locations" class="schema-panel">
+                                <table class="table table-bordered schema-table mb-0">
+                                    <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Lookup</th></tr></thead>
+                                    <tbody>
+                                        <tr class="schema-row" title="Unique identifier"><td class="col-name">id</td><td class="col-type">INTEGER</td><td class="col-desc">Primary key</td><td rowspan="5" class="lookup-col align-middle">city</td></tr>
+                                        <tr class="schema-row" title="City name for queries"><td class="col-name">city</td><td class="col-type">TEXT</td><td class="col-desc">City name</td></tr>
+                                        <tr class="schema-row" title="Country where office is located"><td class="col-name">country</td><td class="col-type">TEXT</td><td class="col-desc">Country</td></tr>
+                                        <tr class="schema-row" title="Street address"><td class="col-name">address</td><td class="col-type">TEXT</td><td class="col-desc">Street address</td></tr>
+                                        <tr class="schema-row" title="IANA timezone (e.g. America/New_York)"><td class="col-name">timezone</td><td class="col-type">TEXT</td><td class="col-desc">IANA timezone</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="section-label mb-2">Sample Lookup Values</div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6 col-lg-3">
+                                <div class="p-3 rounded" style="background: rgba(239,71,111,0.06); border: 1px solid rgba(239,71,111,0.2);">
+                                    <div class="fw-bold mb-2 text-danger"><i class="bi bi-key-fill me-1"></i>secrets</div>
+                                    <div class="lookup-values-box"><span class="lookup-badge secrets">Admin</span><span class="lookup-badge secrets">CEO</span><span class="lookup-badge secrets">CTO</span><span class="lookup-badge secrets">CFO</span><span class="lookup-badge secrets">HR</span><span class="lookup-badge secrets">Support</span><span class="lookup-badge secrets">Developer</span><span class="lookup-badge secrets">QA</span><span class="lookup-badge secrets">Sales</span><span class="lookup-badge secrets">Marketing</span><span class="lookup-badge secrets">DevOps</span><span class="lookup-badge secrets">Intern</span><span class="lookup-badge secrets">Contractor</span><span class="lookup-badge secrets">Manager</span><span class="lookup-badge secrets">Analyst</span></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="p-3 rounded" style="background: rgba(67,97,238,0.06); border: 1px solid rgba(67,97,238,0.2);">
+                                    <div class="fw-bold mb-2" style="color: var(--primary-color);"><i class="bi bi-building me-1"></i>departments</div>
+                                    <div class="lookup-values-box"><span class="lookup-badge departments">Engineering</span><span class="lookup-badge departments">Sales</span><span class="lookup-badge departments">Marketing</span><span class="lookup-badge departments">Finance</span><span class="lookup-badge departments">Human Resources</span><span class="lookup-badge departments">Operations</span></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="p-3 rounded" style="background: rgba(6,214,160,0.06); border: 1px solid rgba(6,214,160,0.2);">
+                                    <div class="fw-bold mb-2 text-success"><i class="bi bi-kanban me-1"></i>projects</div>
+                                    <div class="lookup-values-box"><span class="lookup-badge projects">SentinelGate Security</span><span class="lookup-badge projects">Cloud Migration</span><span class="lookup-badge projects">Q4 Campaign</span><span class="lookup-badge projects">CRM Integration</span><span class="lookup-badge projects">Budget Review 2025</span><span class="lookup-badge projects">Infrastructure Upgrade</span></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="p-3 rounded" style="background: rgba(13,202,240,0.06); border: 1px solid rgba(13,202,240,0.2);">
+                                    <div class="fw-bold mb-2 text-info"><i class="bi bi-geo-alt-fill me-1"></i>office_locations</div>
+                                    <div class="lookup-values-box"><span class="lookup-badge offices">San Francisco</span><span class="lookup-badge offices">New York</span><span class="lookup-badge offices">London</span><span class="lookup-badge offices">Berlin</span></div>
                                 </div>
                             </div>
                         </div>
-                        <hr>
+
+                        <hr class="my-4">
+                        <div class="section-label mb-2">Testing Tips</div>
                         <div class="row">
-                            <div class="col-12">
-                                <h5><i class="bi bi-lightbulb me-2"></i>Testing Tips</h5>
-                                <ul class="mb-0">
-                                    <li>Use any username above in the <strong>Secure</strong> panel for a valid lookup (returns 1 row).</li>
-                                    <li>Use <code>Admin' OR '1'='1</code> in the <strong>Vulnerable</strong> panel to dump all 15 records.</li>
-                                    <li>Click <strong>Reset Database</strong> in the navbar to restore the demo data if needed.</li>
+                            <div class="col-lg-8">
+                                <ul class="mb-0 ps-3">
+                                    <li class="mb-2">Select a table from the dropdown, then enter a lookup value (e.g. <code>Engineering</code> for departments, <code>San Francisco</code> for office_locations).</li>
+                                    <li class="mb-2">Use <code>Admin' OR '1'='1</code> in the <strong>Vulnerable</strong> panel (secrets table) to dump all records.</li>
+                                    <li class="mb-2">Try <code>Engineering' OR '1'='1</code> when departments is selected to see injection across tables.</li>
+                                    <li class="mb-2">Click <strong>Reset Database</strong> in the navbar to restore demo data.</li>
                                     <li>All data is fictional and for educational purposes only.</li>
                                 </ul>
                             </div>
@@ -645,6 +781,12 @@ cursor.execute(query, (user_input,))</pre>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function showSchemaPanel(tableName) {
+            document.querySelectorAll('.schema-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById('schema-' + tableName);
+            if (panel) panel.classList.add('active');
+        }
+
         function toggleTheme() {
             const html = document.documentElement;
             const isDark = html.getAttribute('data-theme') === 'dark';
@@ -669,53 +811,73 @@ cursor.execute(query, (user_input,))</pre>
         }
         initTheme();
 
+        const TABLE_PLACEHOLDERS = {
+            secrets: 'e.g. Admin, CEO',
+            departments: 'e.g. Engineering, Sales',
+            projects: 'e.g. SentinelGate Security',
+            office_locations: 'e.g. San Francisco, London'
+        };
+
+        function updateVulnPlaceholder() {
+            const table = document.getElementById('vulnTable').value;
+            document.getElementById('vulnInput').placeholder = TABLE_PLACEHOLDERS[table] || 'Enter value';
+        }
+        function updateSecurePlaceholder() {
+            const table = document.getElementById('secureTable').value;
+            document.getElementById('secureInput').placeholder = TABLE_PLACEHOLDERS[table] || 'Enter value';
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Handle form submissions
             document.getElementById('vulnerableForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const input = document.getElementById('vulnInput').value.trim();
+                const table = document.getElementById('vulnTable').value;
                 if (input) {
-                    testEndpoint('vulnerable', input, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading', null);
+                    testEndpoint('vulnerable', input, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading', null, table);
                 }
             });
 
             document.getElementById('secureForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const input = document.getElementById('secureInput').value.trim();
+                const table = document.getElementById('secureTable').value;
                 if (input) {
-                    testEndpoint('secure', input, 'secureResponse', null, 'secureResult', 'secureLoading', null);
+                    testEndpoint('secure', input, 'secureResponse', null, 'secureResult', 'secureLoading', null, table);
                 }
             });
 
-            // Handle test case buttons
+            // Handle test case buttons (use secrets table for injection demos)
             document.querySelectorAll('.test-case-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const vulnInput = this.getAttribute('data-vuln');
                     const secureInput = this.getAttribute('data-secure');
                     const testCase = this.getAttribute('data-test-case') || null;
                     
-                    // Update input fields
+                    document.getElementById('vulnTable').value = 'secrets';
+                    document.getElementById('secureTable').value = 'secrets';
+                    updateVulnPlaceholder();
+                    updateSecurePlaceholder();
                     document.getElementById('vulnInput').value = vulnInput;
                     document.getElementById('secureInput').value = secureInput;
                     
-                    // Auto-submit both forms
                     if (vulnInput) {
-                        testEndpoint('vulnerable', vulnInput, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading', null);
+                        testEndpoint('vulnerable', vulnInput, 'vulnResponse', 'vulnQuery', 'vulnResult', 'vulnLoading', null, 'secrets');
                     }
                     if (secureInput) {
-                        testEndpoint('secure', secureInput, 'secureResponse', null, 'secureResult', 'secureLoading', testCase);
+                        testEndpoint('secure', secureInput, 'secureResponse', null, 'secureResult', 'secureLoading', testCase, 'secrets');
                     }
                 });
             });
         });
 
-        function testEndpoint(type, input, responseId, queryId, resultId, loadingId, testCase) {
+        function testEndpoint(type, input, responseId, queryId, resultId, loadingId, testCase, table) {
             const resultDiv = document.getElementById(resultId);
             const loadingDiv = document.getElementById(loadingId);
             resultDiv.classList.add('d-none');
             loadingDiv.style.display = 'block';
 
-            const body = { chat_input: input };
+            const body = { chat_input: input, table: table || 'secrets' };
             if (testCase) body.test_case = testCase;
 
             fetch(`/query/${type}`, {

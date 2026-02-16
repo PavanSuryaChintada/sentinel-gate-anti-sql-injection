@@ -21,8 +21,16 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# Lookup column per table for query endpoints
+TABLE_LOOKUP_COLUMN = {
+    'secrets': 'name',
+    'departments': 'name',
+    'projects': 'name',
+    'office_locations': 'city',
+}
+
 def ensure_db_ready():
-    """Ensure secrets table has data (handles Vercel cold starts where /tmp is empty)."""
+    """Ensure all tables have data (handles Vercel cold starts where /tmp is empty)."""
     try:
         with get_db_connection() as conn:
             c = conn.cursor()
@@ -32,9 +40,14 @@ def ensure_db_ready():
     except sqlite3.OperationalError:
         init_db()
 
+# Allowed tables for query endpoints (prevents arbitrary table access in secure path)
+QUERYABLE_TABLES = {'secrets', 'departments', 'projects', 'office_locations'}
+
 def init_db():
     with get_db_connection() as conn:
         c = conn.cursor()
+
+        # Table: secrets - employee credentials (sensitive)
         c.execute('''
             CREATE TABLE IF NOT EXISTS secrets (
                 id INTEGER PRIMARY KEY,
@@ -42,10 +55,8 @@ def init_db():
                 data TEXT NOT NULL
             )
         ''')
-        # Clear existing data
         c.execute("DELETE FROM secrets")
-        # Insert demo data: employees, credentials, API keys (simulated company)
-        default_data = [
+        secrets_data = [
             (1, 'Admin', 'SUPER_SECRET_PASSWORD_123'),
             (2, 'CEO', 'executive_dashboard_key_9x7k2'),
             (3, 'CTO', 'github_token_ghp_abc123xyz'),
@@ -62,7 +73,71 @@ def init_db():
             (14, 'Manager', 'team_performance_data_q4'),
             (15, 'Analyst', 'bi_dashboard_sql_creds'),
         ]
-        c.executemany("INSERT INTO secrets VALUES (?, ?, ?)", default_data)
+        c.executemany("INSERT INTO secrets VALUES (?, ?, ?)", secrets_data)
+
+        # Table: departments - company departments
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS departments (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                manager TEXT NOT NULL,
+                budget REAL NOT NULL,
+                headcount INTEGER NOT NULL
+            )
+        ''')
+        c.execute("DELETE FROM departments")
+        departments_data = [
+            (1, 'Engineering', 'CTO', 2500000.00, 45),
+            (2, 'Sales', 'Sales', 1200000.00, 22),
+            (3, 'Marketing', 'Marketing', 800000.00, 12),
+            (4, 'Finance', 'CFO', 600000.00, 8),
+            (5, 'Human Resources', 'HR', 400000.00, 5),
+            (6, 'Operations', 'DevOps', 900000.00, 15),
+        ]
+        c.executemany("INSERT INTO departments VALUES (?, ?, ?, ?, ?)", departments_data)
+
+        # Table: projects - active projects
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS projects (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                department_id INTEGER NOT NULL,
+                status TEXT NOT NULL,
+                budget REAL NOT NULL,
+                deadline TEXT,
+                FOREIGN KEY (department_id) REFERENCES departments(id)
+            )
+        ''')
+        c.execute("DELETE FROM projects")
+        projects_data = [
+            (1, 'SentinelGate Security', 1, 'active', 150000.00, '2025-06-30'),
+            (2, 'Cloud Migration', 1, 'active', 320000.00, '2025-09-15'),
+            (3, 'Q4 Campaign', 3, 'completed', 75000.00, '2024-12-31'),
+            (4, 'CRM Integration', 2, 'active', 45000.00, '2025-04-30'),
+            (5, 'Budget Review 2025', 4, 'planning', 0, '2025-03-01'),
+            (6, 'Infrastructure Upgrade', 6, 'active', 180000.00, '2025-08-31'),
+        ]
+        c.executemany("INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?)", projects_data)
+
+        # Table: office_locations - company offices
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS office_locations (
+                id INTEGER PRIMARY KEY,
+                city TEXT NOT NULL,
+                country TEXT NOT NULL,
+                address TEXT NOT NULL,
+                timezone TEXT NOT NULL
+            )
+        ''')
+        c.execute("DELETE FROM office_locations")
+        offices_data = [
+            (1, 'San Francisco', 'USA', '123 Market St', 'America/Los_Angeles'),
+            (2, 'New York', 'USA', '456 Broadway', 'America/New_York'),
+            (3, 'London', 'UK', '78 Thames St', 'Europe/London'),
+            (4, 'Berlin', 'Germany', '9 Unter den Linden', 'Europe/Berlin'),
+        ]
+        c.executemany("INSERT INTO office_locations VALUES (?, ?, ?, ?, ?)", offices_data)
+
         conn.commit()
 
 # Error handlers
@@ -106,7 +181,12 @@ def query_vulnerable():
 
     ensure_db_ready()
     user_input = request.json.get('chat_input', '')
-    query = f"SELECT * FROM secrets WHERE name = '{user_input}'"
+    table = request.json.get('table', 'secrets')
+    if table not in QUERYABLE_TABLES:
+        table = 'secrets'
+    col = TABLE_LOOKUP_COLUMN.get(table, 'name')
+    # DANGER: Vulnerable to SQL injection - user_input and table/col concatenated
+    query = f"SELECT * FROM {table} WHERE {col} = '{user_input}'"
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
@@ -138,11 +218,15 @@ def query_secure():
     ensure_db_ready()
     user_input = request.json.get('chat_input', '')
     test_case = request.json.get('test_case', '')
+    table = request.json.get('table', 'secrets')
+    if table not in QUERYABLE_TABLES:
+        table = 'secrets'
+    col = TABLE_LOOKUP_COLUMN.get(table, 'name')
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            # This is the secure way using parameterized queries
-            query = "SELECT * FROM secrets WHERE name = ?"
+            # Secure: parameterized query; table/col validated from whitelist
+            query = f"SELECT * FROM {table} WHERE {col} = ?"
             cursor.execute(query, (user_input,))
             result = [dict(row) for row in cursor.fetchall()]
             if result:
