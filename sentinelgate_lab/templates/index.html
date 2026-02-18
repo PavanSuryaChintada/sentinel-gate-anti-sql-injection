@@ -145,6 +145,8 @@
         .explanation-panel { background: #f8fafc; border-radius: 8px; padding: 1rem; border-left: 4px solid #dee2e6; margin-top: 0.5rem; }
         .explanation-panel.vuln { border-left-color: var(--danger-color); }
         .explanation-panel.secure { border-left-color: var(--success-color); }
+        .add-to-chrome-btn { background: #4285f4 !important; color: white !important; border: none; }
+        .add-to-chrome-btn:hover { background: #3367d6 !important; color: white !important; }
         .test-case-card { border-left: 4px solid #dee2e6; margin-bottom: 0.75rem; }
         .test-case-card.valid { border-left-color: var(--primary-color); }
         .test-case-card.injection { border-left-color: var(--danger-color); }
@@ -255,9 +257,14 @@
                 <i class="bi bi-database-gear me-1"></i>View Database Schema
             </a>
             <div class="d-flex flex-column align-items-center gap-2 mt-3">
-                <button class="btn btn-success btn-lg" onclick="openChatbotDemo()">
-                    <i class="bi bi-chat-dots-fill me-2"></i>Chatbot Demo
-                </button>
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <button class="btn btn-success btn-lg" onclick="openChatbotDemo()">
+                        <i class="bi bi-chat-dots-fill me-2"></i>Chatbot Demo
+                    </button>
+                    <a href="https://chrome.google.com/webstore" target="_blank" rel="noopener noreferrer" class="btn btn-lg d-inline-flex align-items-center add-to-chrome-btn" id="addToChromeBtn" title="Install SentinelGate SQL Injection Shield - protects chatboxes from SQL injection">
+                        <i class="bi bi-browser-chrome me-2"></i>Add to Chrome
+                    </a>
+                </div>
                 <button type="button" class="explanation-btn info" data-bs-toggle="collapse" data-bs-target="#chatbotExplain">
                     <i class="bi bi-info-circle"></i> What is the Chatbot Demo?
                 </button>
