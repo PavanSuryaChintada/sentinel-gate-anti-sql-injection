@@ -264,6 +264,9 @@
                     <a href="https://chrome.google.com/webstore" target="_blank" rel="noopener noreferrer" class="btn btn-lg d-inline-flex align-items-center add-to-chrome-btn" id="addToChromeBtn" title="Install SentinelGate SQL Injection Shield - protects chatboxes from SQL injection">
                         <i class="bi bi-browser-chrome me-2"></i>Add to Chrome
                     </a>
+                    <button type="button" class="explanation-btn info" data-bs-toggle="collapse" data-bs-target="#extensionExplain">
+                        <i class="bi bi-info-circle"></i> What does the extension do?
+                    </button>
                 </div>
                 <button type="button" class="explanation-btn info" data-bs-toggle="collapse" data-bs-target="#chatbotExplain">
                     <i class="bi bi-info-circle"></i> What is the Chatbot Demo?
@@ -272,6 +275,11 @@
             <div class="collapse mt-2 mx-auto" id="chatbotExplain" style="max-width: 600px;">
                 <div class="explanation-panel">
                     <p class="mb-0">Compare <strong>Secured</strong> vs <strong>Unsecured</strong> chatbots. The unsecured chatbot executes user input as SQL and leaks all secrets when given injection payloads. The secured chatbot refuses all data requests and blocks SQL/prompt injection attempts. Use this to see how AI assistants can be vulnerable to prompt injection and data exfiltration.</p>
+                </div>
+            </div>
+            <div class="collapse mt-2 mx-auto" id="extensionExplain" style="max-width: 600px;">
+                <div class="explanation-panel">
+                    <p class="mb-0"><strong>Add to Chrome</strong> installs the SentinelGate SQL Injection Shield extension. It protects chatboxes and forms across websites (including Newtrea and AI chatbots) by blocking SQL injection attempts before they reach the server. Defense-in-depth for vulnerable applications.</p>
                 </div>
             </div>
         </div>
@@ -782,6 +790,9 @@ cursor.execute(query, (user_input,))</pre>
             <p class="mb-0">© 2026 SentinelGate SQL Injection Demo. For educational purposes only.</p>
             <p class="mb-0 text-muted">
                 <small>Built with <i class="bi bi-heart-fill text-danger"></i> using Flask and Bootstrap</small>
+            </p>
+            <p class="mb-0 mt-2">
+                <a href="https://chrome.google.com/webstore" target="_blank" rel="noopener noreferrer" class="text-decoration-none" style="color: rgba(255,255,255,0.8);"><i class="bi bi-browser-chrome me-1"></i>SQL Injection Shield Extension</a>
             </p>
         </div>
     </footer>
