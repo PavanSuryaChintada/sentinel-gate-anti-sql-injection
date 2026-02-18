@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      width: 320px;
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      color: #212529;
+      background: #f8f9fa;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .header img { width: 40px; height: 40px; }
+    .header h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #4361ee;
+    }
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .status-label { font-weight: 500; }
+    .toggle {
+      width: 44px;
+      height: 24px;
+      background: #dee2e6;
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .toggle.on { background: #06d6a0; }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle.on::after { transform: translateX(20px); }
+    .info {
+      font-size: 12px;
+      color: #6c757d;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+    .footer {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #dee2e6;
+      text-align: center;
+    }
+    .footer a {
+      color: #4361ee;
+      text-decoration: none;
+      font-size: 12px;
+    }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="icons/icon48.png" alt="SentinelGate">
+    <h1>SQL Injection Shield</h1>
+  </div>
+  <div class="status">
+    <span class="status-label">Protection</span>
+    <div class="toggle on" id="toggle" role="switch" aria-checked="true"></div>
+  </div>
+  <p class="info">
+    Blocks SQL injection attempts in chatboxes and forms across all websites. Defense-in-depth for AI chatbots and web applications.
+  </p>
+  <div class="footer">
+    <a href="#" target="_blank" id="sentinelgateLink">SentinelGate Lab</a>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
