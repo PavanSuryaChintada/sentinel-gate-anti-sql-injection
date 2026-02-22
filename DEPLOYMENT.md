@@ -1,6 +1,10 @@
 # SentinelGate Deployment Guide
 
-This guide covers deploying the SentinelGate SQL Injection demo to production.
+This guide covers deploying the SentinelGate SQL Injection Shield to production. After deployment, clients can protect their websites by adding one script tag:
+
+```html
+<script src="https://your-app-url/sentinel-gate.js"></script>
+```
 
 ---
 

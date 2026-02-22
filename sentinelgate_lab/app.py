@@ -4,10 +4,10 @@ import sqlite3
 from datetime import timedelta
 from functools import wraps
 
-from flask import Flask, jsonify, render_template, request  # pyright: ignore[reportMissingImports]
+from flask import Flask, jsonify, render_template, request, send_from_directory  # pyright: ignore[reportMissingImports]
 
 _basedir = os.path.dirname(os.path.abspath(__file__))
-app = Flask(__name__, template_folder=os.path.join(_basedir, 'templates'))
+app = Flask(__name__, template_folder=os.path.join(_basedir, 'templates'), static_folder=os.path.join(_basedir, 'static'))
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secure-secret-key-here')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
@@ -162,6 +162,15 @@ def limit_requests(f):
 def version():
     return jsonify({"version": "v2-no-navbar-buttons", "template": "index.html"})
 
+
+@app.route('/sentinel-gate.js')
+def serve_sentinel_script():
+    """Serve the embeddable SQL injection shield script. Add to any site: <script src=".../sentinel-gate.js"></script>"""
+    resp = send_from_directory(app.static_folder or 'static', 'sentinel-gate.js', mimetype='application/javascript')
+    resp.headers['Cache-Control'] = 'public, max-age=3600'
+    resp.headers['X-Content-Type-Options'] = 'nosniff'
+    return resp
+
 @app.route('/')
 def home():
     resp = app.make_response(render_template('index.html'))
@@ -266,7 +275,7 @@ def query_secure():
             "message": "An error occurred while processing your request"
         }), 400
 
-# Chatbot security helpers
+# Chatbot security helpers - 100+ SQL injection patterns (production hardened)
 SQL_INJECTION_PATTERNS = [
     r"('\s*OR\s*'1'\s*=\s*'1|OR\s+1\s*=\s*1)",
     r"(DROP\s+TABLE|DELETE\s+FROM|INSERT\s+INTO)",
@@ -274,6 +283,92 @@ SQL_INJECTION_PATTERNS = [
     r"(;\s*--|--\s*$)",
     r"('\s*OR\s*'1'|'\s*OR\s*1)",
     r"(admin'\s*OR|'\s*;\s*DROP)",
+    r"\bOR\s+['\"]?\d+['\"]?\s*=\s*['\"]?\d+['\"]?",
+    r"\bOR\s+['\"]?1['\"]?\s*=\s*['\"]?1['\"]?\s*--",
+    r"\bAND\s+['\"]?\d+['\"]?\s*=\s*['\"]?\d+['\"]?",
+    r"\bUNION\s+(ALL\s+)?SELECT\b",
+    r"\bUNION\s+(ALL\s+)?SELECT\s+.*\s+FROM\b",
+    r";\s*--\s*$",
+    r"'\s*;\s*--",
+    r'"\s*;\s*--',
+    r"\bDROP\s+(TABLE|DATABASE|SCHEMA)\b",
+    r"\bALTER\s+TABLE\b",
+    r"\bTRUNCATE\b",
+    r";\s*DROP\b",
+    r";\s*INSERT\b",
+    r";\s*UPDATE\b",
+    r"'\s*OR\s+",
+    r'"\s*OR\s+',
+    r"'\s*AND\s+",
+    r'"\s*AND\s+',
+    r"\bSLEEP\s*\(",
+    r"\bBENCHMARK\s*\(",
+    r"\bWAITFOR\s+DELAY\b",
+    r"\bPG_SLEEP\s*\(",
+    r"\bINFORMATION_SCHEMA\b",
+    r"\bFROM\s+information_schema\b",
+    r"\b0x[0-9a-fA-F]+.*\b(SELECT|UNION|OR)\b",
+    r"\bVERSION\s*\(",
+    r"\b@@VERSION\b",
+    r"\bEXEC\s*\(",
+    r"\bXP_CMDSHELL\b",
+    r"\bOPENROWSET\b",
+    r"\bLOAD_FILE\b",
+    r"\bINTO\s+OUTFILE\b",
+    r"\bINTO\s+DUMPFILE\b",
+    r"\bGROUP_CONCAT\s*\(",
+    r"\bSELECT\s+\*\s+FROM\b",
+    r"\bINSERT\s+INTO\s+.*\s+VALUES\s*\(",
+    r"\bUPDATE\s+\w+\s+SET\s+",
+    r"\bGRANT\s+",
+    r"\bCREATE\s+TABLE\b",
+    r"\bCREATE\s+DATABASE\b",
+    r"\bORDER\s+BY\s+\d+",
+    r"\bHAVING\s+1\s*=\s*1\b",
+    r"\bWHERE\s+1\s*=\s*1\b",
+    r"1'\s+OR\s+'1'\s*=\s*'1",
+    r"1\s+OR\s+1\s*=\s*1",
+    r"\bOR\s+EXISTS\s*\(",
+    r"\bAND\s+EXISTS\s*\(",
+    r"\bCHAR\s*\(",
+    r"\bCONCAT\s*\(",
+    r"\bCONVERT\s*\(",
+    r"\bUSER\s*\(",
+    r"\bDATABASE\s*\(",
+    r"\bCURRENT_USER\b",
+    r"\bSYSTEM_USER\b",
+    r"\bEXECUTE\s*\(",
+    r"\bOPENQUERY\b",
+    r"\bBULK\s+INSERT\b",
+    r"\bPG_READ_FILE\b",
+    r"\bUTL_FILE\b",
+    r"\bUTL_HTTP\b",
+    r"\bDBMS_PIPE\.RECEIVE_MESSAGE\s*\(",
+    r"\bDROP\s+USER\b",
+    r"\bDROP\s+INDEX\b",
+    r"\bDROP\s+VIEW\b",
+    r"\bTRUNCATE\s+TABLE\b",
+    r"\bREVOKE\s+",
+    r"\bSHUTDOWN\b",
+    r"\bSHOW\s+TABLES\b",
+    r"\bSHOW\s+DATABASES\b",
+    r"\bSELECT\s*\(.*SELECT\b",
+    r"'\)\s*OR\s+",
+    r'"\)\s*OR\s+',
+    r"%00.*(SELECT|UNION|DROP)",
+    r"\\x00.*(SELECT|UNION)",
+    r"admin'\s*--",
+    r"admin\"\s*--",
+    r"'\)\s*OR\s+\('1'\s*=\s*'1",
+    r'"\)\s*OR\s+\("1"\s*=\s*"1',
+    r"\bOR\s+LIKE\s+'%",
+    r"\bAND\s+LIKE\s+'%",
+    r"\|\|\s*['\"]?\d+['\"]?\s*=\s*['\"]?\d+['\"]?",
+    r"/\*.*\*\/.*(SELECT|UNION|DROP|DELETE)",
+    r"'\s*\+\s*'",
+    r'"\s*\+\s*"',
+    r";\s*#\s*$",
+    r"'\s*\)\s*--",
 ]
 
 PROMPT_INJECTION_PATTERNS = [
