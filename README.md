@@ -81,6 +81,8 @@ After deploying, share your URL with clients. They add one line to their codebas
 <script src="https://your-sentinelgate-app.vercel.app/sentinel-gate.js"></script>
 ```
 
+For the landing page script tag to show the deployed URL instead of localhost, set `VITE_SCRIPT_BASE=https://your-app-url` before running `npm run build` in the frontend.
+
 ---
 
 ## Database & SQL Queries

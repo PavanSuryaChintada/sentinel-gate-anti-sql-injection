@@ -2,11 +2,16 @@ import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Copy, Check } from 'lucide-react';
 
+const SCRIPT_BASE = import.meta.env.VITE_SCRIPT_BASE || '';
+const PROD_URL = 'https://sentinel-gate-anti-sql-injection.vercel.app';
+
 export function ScriptTagDemo() {
   const [copied, setCopied] = useState(false);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const base = typeof window !== 'undefined' ? window.location.origin : '';
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const isLocalhost = /localhost|127\.0\.0\.1/.test(origin);
+  const base = SCRIPT_BASE || (isLocalhost ? PROD_URL : origin) || PROD_URL;
   const code = `<script src="${base}/sentinel-gate.js"><\/script>`;
 
   const handleCopy = async () => {
@@ -51,19 +56,17 @@ export function ScriptTagDemo() {
             </div>
             <span className="text-neutral-500 text-sm font-mono">index.html</span>
           </div>
-          <div className="p-6 font-mono text-base relative">
-            <motion.div
-              className="relative inline-block px-4 py-2 rounded-lg border border-[#D9FF00]/30 bg-[#D9FF00]/5"
-              animate={{
-                boxShadow: ['0 0 20px rgba(217,255,0,0.1)', '0 0 30px rgba(217,255,0,0.25)', '0 0 20px rgba(217,255,0,0.1)'],
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          <div className="p-6 font-mono text-sm">
+            <p className="text-neutral-500 text-xs mb-2">Copy this script tag — paste in your HTML:</p>
+            <pre
+              className="w-full p-4 rounded-lg border border-neutral-800 bg-[#0A0A0A] overflow-x-auto cursor-pointer select-all hover:border-[#D9FF00]/30 transition-colors"
+              onClick={handleCopy}
+              title="Click to copy"
             >
-              <span className="text-neutral-500">&lt;script</span>{' '}
-              <span className="text-neutral-400">src=</span>
-              <span className="text-[#D9FF00]">"{base}/sentinel-gate.js"</span>
-              <span className="text-neutral-500">&gt;&lt;/script&gt;</span>
-            </motion.div>
+              <code className="text-neutral-300">
+                {`<script src="${base}/sentinel-gate.js"></script>`}
+              </code>
+            </pre>
           </div>
           <div className="px-6 pb-6 flex justify-end">
             <motion.button

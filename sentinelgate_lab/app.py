@@ -4,7 +4,7 @@ import sqlite3
 from datetime import timedelta
 from functools import wraps
 
-from flask import Flask, jsonify, render_template, request, send_from_directory  # pyright: ignore[reportMissingImports]
+from flask import Flask, jsonify, render_template, request, Response, send_from_directory  # pyright: ignore[reportMissingImports]
 
 _basedir = os.path.dirname(os.path.abspath(__file__))
 _proj_root = os.path.dirname(_basedir)
@@ -169,8 +169,21 @@ def version():
 
 @app.route('/sentinel-gate.js')
 def serve_sentinel_script():
-    """Serve the embeddable SQL injection shield script. Add to any site: <script src=".../sentinel-gate.js"></script>"""
-    resp = send_from_directory(app.static_folder or 'static', 'sentinel-gate.js', mimetype='application/javascript')
+    """Serve the embeddable SQL injection shield script with correct origin in header comment."""
+    static_dir = app.static_folder or os.path.join(_basedir, 'static')
+    path = os.path.join(static_dir, 'sentinel-gate.js')
+    with open(path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Inject actual deployed URL into header comment (so viewing the .js file shows correct embed code)
+    base = request.url_root.rstrip('/')
+    if request.headers.get('X-Forwarded-Proto') == 'https':
+        base = base.replace('http://', 'https://', 1)
+    content = content.replace(
+        'https://your-domain.com',
+        base,
+        1
+    )
+    resp = Response(content, mimetype='application/javascript')
     resp.headers['Cache-Control'] = 'public, max-age=3600'
     resp.headers['X-Content-Type-Options'] = 'nosniff'
     return resp
