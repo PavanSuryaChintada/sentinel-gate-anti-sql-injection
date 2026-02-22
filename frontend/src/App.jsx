@@ -1,153 +1,44 @@
 import { useState, useCallback } from 'react';
-import { Container } from 'react-bootstrap';
 import {
   Navbar,
-  HeroSection,
-  QueryPanel,
-  TestCases,
-  DatabaseSchema,
-  AttackTypes,
-  AboutSection,
+  Hero,
+  LiveKill,
+  FeatureGrid,
+  ScriptTagDemo,
+  AIShield,
+  DemoSection,
   ChatbotModal,
   Footer,
-} from './components';
-import { queryEndpoint } from './api';
-
-const defaultInput = "Admin' OR '1'='1";
+} from './components/landing';
+import { resetDatabase } from './api';
 
 function App() {
   const [chatbotShow, setChatbotShow] = useState(false);
 
-  const [vulnState, setVulnState] = useState({
-    input: defaultInput,
-    table: 'secrets',
-    result: null,
-    loading: false,
-    queryExecuted: null,
-  });
-
-  const [secureState, setSecureState] = useState({
-    input: defaultInput,
-    table: 'secrets',
-    result: null,
-    loading: false,
-  });
-
-  const runVulnQuery = useCallback(async (input, table, testCase = null) => {
-    setVulnState((s) => ({ ...s, loading: true, result: null, queryExecuted: null }));
+  const handleReset = useCallback(async () => {
+    if (!window.confirm('Reset database to default values?')) return;
     try {
-      const data = await queryEndpoint('vulnerable', input, table, testCase);
-      setVulnState((s) => ({
-        ...s,
-        input,
-        table,
-        result: data,
-        queryExecuted: data.query_executed || null,
-        loading: false,
-      }));
+      const data = await resetDatabase();
+      alert(data.message);
     } catch (err) {
-      setVulnState((s) => ({
-        ...s,
-        result: { status: 'error', message: err.message },
-        loading: false,
-      }));
+      alert('Failed to reset database.');
     }
   }, []);
-
-  const runSecureQuery = useCallback(async (input, table, testCase = null) => {
-    setSecureState((s) => ({ ...s, loading: true, result: null }));
-    try {
-      const data = await queryEndpoint('secure', input, table, testCase);
-      setSecureState((s) => ({
-        ...s,
-        input,
-        table,
-        result: data,
-        loading: false,
-      }));
-    } catch (err) {
-      setSecureState((s) => ({
-        ...s,
-        result: { status: 'error', message: err.message },
-        loading: false,
-      }));
-    }
-  }, []);
-
-  function handleVulnSubmit(val, table) {
-    runVulnQuery(val, table);
-  }
-
-  function handleSecureSubmit(val, table) {
-    runSecureQuery(val, table);
-  }
-
-  function handleRunVuln({ input, table, data }) {
-    setVulnState((s) => ({
-      ...s,
-      input,
-      table,
-      result: data,
-      queryExecuted: data?.query_executed || null,
-      loading: false,
-    }));
-  }
-
-  function handleRunSecure({ input, table, data }) {
-    setSecureState((s) => ({
-      ...s,
-      input,
-      table,
-      result: data,
-      loading: false,
-    }));
-  }
 
   return (
-    <>
-      <Navbar />
-      <Container>
-        <HeroSection onOpenChatbot={() => setChatbotShow(true)} />
-
-        <div className="row g-4">
-          <div className="col-lg-6">
-            <QueryPanel
-              type="vulnerable"
-              input={vulnState.input}
-              table={vulnState.table}
-              result={vulnState.result}
-              loading={vulnState.loading}
-              queryExecuted={vulnState.queryExecuted}
-              onInputChange={(v) => setVulnState((s) => ({ ...s, input: v }))}
-              onTableChange={(t) => setVulnState((s) => ({ ...s, table: t }))}
-              onSubmit={handleVulnSubmit}
-            />
-          </div>
-          <div className="col-lg-6">
-            <QueryPanel
-              type="secure"
-              input={secureState.input}
-              table={secureState.table}
-              result={secureState.result}
-              loading={secureState.loading}
-              queryExecuted={null}
-              onInputChange={(v) => setSecureState((s) => ({ ...s, input: v }))}
-              onTableChange={(t) => setSecureState((s) => ({ ...s, table: t }))}
-              onSubmit={handleSecureSubmit}
-            />
-          </div>
-        </div>
-
-        <TestCases onRunVuln={handleRunVuln} onRunSecure={handleRunSecure} />
-
-        <DatabaseSchema />
-        <AttackTypes />
-        <AboutSection />
-      </Container>
-
-      <ChatbotModal show={chatbotShow} onHide={() => setChatbotShow(false)} />
+    <div className="min-h-screen bg-[#020617]">
+      <Navbar onResetDatabase={handleReset} />
+      <main>
+        <Hero />
+        <LiveKill />
+        <FeatureGrid />
+        <ScriptTagDemo />
+        <AIShield />
+        <DemoSection onOpenChatbot={() => setChatbotShow(true)} />
+      </main>
       <Footer />
-    </>
+      <ChatbotModal show={chatbotShow} onHide={() => setChatbotShow(false)} />
+    </div>
   );
 }
 
