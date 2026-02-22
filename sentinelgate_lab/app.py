@@ -7,6 +7,10 @@ from functools import wraps
 from flask import Flask, jsonify, render_template, request, send_from_directory  # pyright: ignore[reportMissingImports]
 
 _basedir = os.path.dirname(os.path.abspath(__file__))
+_proj_root = os.path.dirname(_basedir)
+_react_dist = os.path.join(_proj_root, 'frontend', 'dist')
+_use_react = os.path.exists(os.path.join(_react_dist, 'index.html'))
+
 app = Flask(__name__, template_folder=os.path.join(_basedir, 'templates'), static_folder=os.path.join(_basedir, 'static'))
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secure-secret-key-here')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
@@ -173,11 +177,23 @@ def serve_sentinel_script():
 
 @app.route('/')
 def home():
+    if _use_react:
+        return send_from_directory(_react_dist, 'index.html', mimetype='text/html')
     resp = app.make_response(render_template('index.html'))
     resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     resp.headers['Pragma'] = 'no-cache'
     resp.headers['Expires'] = '0'
     return resp
+
+
+@app.route('/assets/<path:filename>')
+def serve_react_assets(filename):
+    """Serve React build assets when using React frontend."""
+    if _use_react:
+        assets_dir = os.path.join(_react_dist, 'assets')
+        if os.path.exists(os.path.join(assets_dir, filename)):
+            return send_from_directory(assets_dir, filename)
+    return jsonify({"status": "error", "message": "Not found"}), 404
 
 @app.route('/query/vulnerable', methods=['POST'])
 @limit_requests

@@ -37,7 +37,7 @@ Your project is set up for Vercel. The app uses `/tmp` for SQLite when deployed 
 4. **Configure**:
    - **Root Directory**: `.` (project root)
    - **Framework Preset**: **Flask**
-   - **Build Command**: `pip install -r requirements.txt`
+   - **Build Command**: `pip install -r requirements.txt && cd frontend && npm install && npm run build`
    - **Environment Variables**: Add `SECRET_KEY` (generate with `python -c "import secrets; print(secrets.token_hex(32))"`)
 
 5. **Deploy** — Click "Deploy". Your app will be live in ~1–2 minutes.
@@ -75,9 +75,11 @@ Render works reliably with Flask. A `render.yaml` is included for one-click depl
 1. Go to [dashboard.render.com](https://dashboard.render.com) → **New** → **Web Service**
 2. Connect your GitHub repo
 3. Render auto-detects `render.yaml`. Or manually set:
-   - **Build Command**: `pip install -r requirements.txt`
+   - **Build Command**: `pip install -r requirements.txt` (or add `&& cd frontend && npm install && npm run build` if Node.js is available for the React UI)
    - **Start Command**: `gunicorn -w 1 -b 0.0.0.0:$PORT app:app`
 4. Deploy. Your app will be live at `https://your-app.onrender.com`
+
+**Note:** If `frontend/dist` does not exist, Flask serves the legacy HTML template. To use the React UI, ensure the frontend is built (requires Node.js in the build environment).
 
 ---
 

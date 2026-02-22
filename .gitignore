@@ -9,6 +9,10 @@ __pycache__/
 *.db
 users.db
 
+# Node / React
+frontend/node_modules/
+frontend/dist/
+
 # Vercel
 .vercel/
 
