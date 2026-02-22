@@ -2,11 +2,14 @@ import { useState, useCallback } from 'react';
 import {
   Navbar,
   Hero,
-  LiveKill,
+  SentinelInterceptor,
   FeatureGrid,
   ScriptTagDemo,
   AIShield,
   DemoSection,
+  DatabaseSchema,
+  AttackTypes,
+  AboutSection,
   ChatbotModal,
   Footer,
 } from './components/landing';
@@ -26,15 +29,18 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#020617]">
+    <div className="min-h-screen bg-[#0A0A0A]">
       <Navbar onResetDatabase={handleReset} />
       <main>
         <Hero />
-        <LiveKill />
+        <SentinelInterceptor />
         <FeatureGrid />
         <ScriptTagDemo />
         <AIShield />
         <DemoSection onOpenChatbot={() => setChatbotShow(true)} />
+        <DatabaseSchema />
+        <AttackTypes />
+        <AboutSection />
       </main>
       <Footer />
       <ChatbotModal show={chatbotShow} onHide={() => setChatbotShow(false)} />

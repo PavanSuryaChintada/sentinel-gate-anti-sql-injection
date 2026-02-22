@@ -15,22 +15,23 @@ function QueryPanel({ type, input, table, result, loading, queryExecuted, onInpu
       viewport={{ once: true }}
       whileHover={{ scale: 1.01, y: -2 }}
       className={`rounded-2xl border p-6 ${
-        isVuln ? 'border-red-500/30 bg-red-500/5' : 'border-emerald-500/30 bg-emerald-500/5'
+        isVuln ? 'border-[#FF3E3E]/30 bg-[#FF3E3E]/5' : 'border-[#D9FF00]/30 bg-[#D9FF00]/5'
       }`}
     >
-      <div className={`flex items-center gap-2 mb-4 font-semibold ${
-        isVuln ? 'text-red-400' : 'text-emerald-400'
+      <div
+        className={`flex items-center gap-2 mb-4 font-semibold ${
+        isVuln ? 'text-[#FF3E3E]' : 'text-[#D9FF00]'
       }`}>
         <span>{isVuln ? '⚠' : '✓'}</span>
         {isVuln ? 'Vulnerable' : 'Secure'} Endpoint
       </div>
       <form onSubmit={(e) => { e.preventDefault(); const v = (input || '').trim(); if (v) onSubmit?.(v, table); }}>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-slate-400 mb-2">Table</label>
+          <label className="block text-sm font-medium text-neutral-400 mb-2">Table</label>
           <select
             value={table}
             onChange={(e) => onTableChange?.(e.target.value)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 text-white px-4 py-2 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none"
+            className="w-full rounded-lg border border-neutral-700 bg-[#0A0A0A] text-white px-4 py-2 focus:ring-2 focus:ring-[#D9FF00]/50 focus:border-[#D9FF00]/50 outline-none"
           >
             {TABLES.map((t) => (
               <option key={t} value={t}>{t}</option>
@@ -38,37 +39,37 @@ function QueryPanel({ type, input, table, result, loading, queryExecuted, onInpu
           </select>
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-slate-400 mb-2">Lookup value</label>
+          <label className="block text-sm font-medium text-neutral-400 mb-2">Lookup value</label>
           <input
             type="text"
             value={input}
             onChange={(e) => onInputChange?.(e.target.value)}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 text-white px-4 py-2 font-mono text-sm focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 outline-none"
+            className="w-full rounded-lg border border-neutral-700 bg-[#0A0A0A] text-white px-4 py-2 font-mono text-sm focus:ring-2 focus:ring-[#D9FF00]/50 focus:border-[#D9FF00]/50 outline-none"
           />
         </div>
         <button
           type="submit"
           className={`w-full py-3 rounded-lg font-semibold transition-all ${
-            isVuln ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
+            isVuln ? 'bg-[#FF3E3E]/20 text-[#FF3E3E] hover:bg-[#FF3E3E]/30' : 'bg-[#D9FF00]/20 text-[#D9FF00] hover:bg-[#D9FF00]/30'
           }`}
         >
           Test Query
         </button>
       </form>
       {loading && (
-        <div className="mt-4 flex items-center gap-2 text-slate-400">
-          <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <div className="mt-4 flex items-center gap-2 text-neutral-500">
+          <div className="w-4 h-4 border-2 border-[#D9FF00] border-t-transparent rounded-full animate-spin" />
           Executing...
         </div>
       )}
       {!loading && result && (
-        <div className="mt-4 p-4 rounded-lg bg-slate-950 border border-slate-800 overflow-auto max-h-48">
-          <pre className="text-xs text-slate-400 font-mono whitespace-pre-wrap">
+        <div className="mt-4 p-4 rounded-lg bg-[#0A0A0A] border border-neutral-800 overflow-auto max-h-48">
+          <pre className="text-xs text-neutral-400 font-mono whitespace-pre-wrap">
             {JSON.stringify(result, null, 2)}
           </pre>
           {queryExecuted && (
-            <pre className="text-xs text-amber-400 font-mono mt-2">{queryExecuted}</pre>
+            <pre className="text-xs text-[#D9FF00] font-mono mt-2">{queryExecuted}</pre>
           )}
         </div>
       )}
@@ -118,15 +119,15 @@ export function DemoSection({ onOpenChatbot }) {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent mb-4">
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-white to-neutral-500 bg-clip-text text-transparent mb-4">
             Interactive Demo
           </h2>
-          <p className="text-slate-400 mb-6">Compare vulnerable vs secure SQL handling</p>
+          <p className="text-neutral-500 mb-6">Compare vulnerable vs secure SQL handling</p>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onOpenChatbot}
-            className="px-6 py-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-semibold hover:bg-emerald-500/30 transition-colors"
+            className="px-6 py-3 rounded-xl bg-[#D9FF00]/20 border border-[#D9FF00]/30 text-[#D9FF00] font-semibold hover:bg-[#D9FF00]/30 transition-colors"
           >
             Chatbot Demo
           </motion.button>
@@ -160,7 +161,7 @@ export function DemoSection({ onOpenChatbot }) {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6"
+          className="rounded-2xl border border-neutral-800 bg-[#171717] p-6"
         >
           <h3 className="text-lg font-semibold text-white mb-4">Test cases</h3>
           <div className="flex flex-wrap gap-3">
@@ -170,7 +171,7 @@ export function DemoSection({ onOpenChatbot }) {
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => runTestCase(tc)}
-                className="px-4 py-2 rounded-lg border border-slate-700 text-slate-300 text-sm font-medium hover:border-emerald-500/50 hover:text-emerald-400 transition-colors"
+                className="px-4 py-2 rounded-lg border border-neutral-700 text-neutral-300 text-sm font-medium hover:border-[#D9FF00]/50 hover:text-[#D9FF00] transition-colors"
               >
                 {tc.label}
               </motion.button>

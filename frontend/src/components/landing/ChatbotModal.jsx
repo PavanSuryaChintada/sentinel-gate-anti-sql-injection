@@ -49,11 +49,11 @@ export function ChatbotModal({ show, onHide }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl overflow-hidden"
+            className="w-full max-w-lg rounded-2xl border border-neutral-800 bg-[#0A0A0A] shadow-2xl overflow-hidden"
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
               <h3 className="text-lg font-semibold text-white">Chatbot Demo</h3>
-              <button onClick={onHide} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white">
+              <button onClick={onHide} className="p-2 rounded-lg hover:bg-neutral-800 text-neutral-500 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -64,35 +64,35 @@ export function ChatbotModal({ show, onHide }) {
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => openChatbot('secured')}
-                    className="p-6 rounded-xl border-2 border-emerald-500/50 bg-emerald-500/10 text-left hover:bg-emerald-500/20 transition-colors"
+                    className="p-6 rounded-xl border-2 border-[#D9FF00]/50 bg-[#D9FF00]/10 text-left hover:bg-[#D9FF00]/20 transition-colors"
                   >
-                    <span className="text-emerald-400 font-semibold">Secured</span>
-                    <p className="text-slate-400 text-sm mt-1">Blocks SQL & prompt injection</p>
+                    <span className="text-[#D9FF00] font-semibold">Secured</span>
+                    <p className="text-neutral-500 text-sm mt-1">Blocks SQL & prompt injection</p>
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => openChatbot('unsecured')}
-                    className="p-6 rounded-xl border-2 border-red-500/50 bg-red-500/10 text-left hover:bg-red-500/20 transition-colors"
+                    className="p-6 rounded-xl border-2 border-[#FF3E3E]/50 bg-[#FF3E3E]/10 text-left hover:bg-[#FF3E3E]/20 transition-colors"
                   >
-                    <span className="text-red-400 font-semibold">Unsecured</span>
-                    <p className="text-slate-400 text-sm mt-1">Vulnerable to injection</p>
+                    <span className="text-[#FF3E3E] font-semibold">Unsecured</span>
+                    <p className="text-neutral-500 text-sm mt-1">Vulnerable to injection</p>
                   </motion.button>
                 </div>
               ) : (
                 <>
                   <button
                     onClick={() => { setActiveChatbot(null); setMessages([]); }}
-                    className="text-sm text-slate-400 hover:text-white mb-4"
+                    className="text-sm text-neutral-500 hover:text-white mb-4"
                   >
                     ← Back
                   </button>
-                  <div className="h-64 overflow-y-auto space-y-3 mb-4 p-4 rounded-lg bg-slate-900/50 border border-slate-800">
+                  <div className="h-64 overflow-y-auto space-y-3 mb-4 p-4 rounded-lg bg-[#171717] border border-neutral-800">
                     {messages.map((m, i) => (
                       <div
                         key={i}
                         className={`max-w-[85%] rounded-lg px-4 py-2 ${
-                          m.role === 'user' ? 'ml-auto bg-emerald-500/20 text-emerald-100' : 'bg-slate-800 text-slate-200'
+                          m.role === 'user' ? 'ml-auto bg-[#D9FF00]/20 text-[#D9FF00]' : 'bg-neutral-800 text-neutral-200'
                         }`}
                       >
                         {m.text}
@@ -106,12 +106,12 @@ export function ChatbotModal({ show, onHide }) {
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                       placeholder="Type a message..."
-                      className="flex-1 rounded-lg border border-slate-700 bg-slate-900 text-white px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-500/50"
+                      className="flex-1 rounded-lg border border-neutral-700 bg-[#0A0A0A] text-white px-4 py-2 outline-none focus:ring-2 focus:ring-[#D9FF00]/50"
                     />
                     <button
                       onClick={sendMessage}
                       disabled={loading}
-                      className="px-4 py-2 rounded-lg bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 disabled:opacity-50"
+                      className="px-4 py-2 rounded-lg bg-[#D9FF00] text-[#0A0A0A] font-semibold hover:bg-[#D9FF00]/90 disabled:opacity-50"
                     >
                       Send
                     </button>

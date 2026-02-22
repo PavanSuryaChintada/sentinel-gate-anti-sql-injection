@@ -7,29 +7,15 @@
     @apply scroll-smooth;
   }
   body {
-    @apply bg-[#020617] text-slate-100 font-sans;
+    @apply bg-[#0A0A0A] text-neutral-100 font-sans antialiased;
   }
 }
 
-/* Spotlight hover effect */
-.spotlight-card {
-  position: relative;
-  overflow: hidden;
-}
+/* Spotlight hover - kinetic lime */
 .spotlight-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
   background: radial-gradient(
     600px circle at var(--mouse-x) var(--mouse-y),
-    rgba(16, 185, 129, 0.15),
+    rgba(217, 255, 0, 0.08),
     transparent 40%
   );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
 }

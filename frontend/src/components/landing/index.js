@@ -1,9 +1,12 @@
 export { Navbar } from './Navbar';
 export { Hero } from './Hero';
-export { LiveKill } from './LiveKill';
+export { SentinelInterceptor } from './SentinelInterceptor';
 export { FeatureGrid } from './FeatureGrid';
 export { ScriptTagDemo } from './ScriptTagDemo';
 export { AIShield } from './AIShield';
 export { DemoSection } from './DemoSection';
+export { DatabaseSchema } from './DatabaseSchema';
+export { AttackTypes } from './AttackTypes';
+export { AboutSection } from './AboutSection';
 export { ChatbotModal } from './ChatbotModal';
 export { Footer } from './Footer';

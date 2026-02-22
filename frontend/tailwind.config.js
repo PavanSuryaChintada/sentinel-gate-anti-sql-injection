@@ -7,24 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          bg: '#020617',
-          accent: '#10b981',
-          danger: '#ef4444',
-          border: 'rgba(30, 41, 59, 0.8)',
-        },
+        obsidian: '#0A0A0A',
+        obsidianSecondary: '#171717',
+        kinetic: '#D9FF00',
+        intelligence: '#606060',
+        danger: '#FF3E3E',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      animation: {
-        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
-      },
-      keyframes: {
-        'glow-pulse': {
-          '0%, 100%': { opacity: '1', filter: 'brightness(1)' },
-          '50%': { opacity: '0.8', filter: 'brightness(1.2)' },
-        },
       },
     },
   },
