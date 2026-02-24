@@ -245,8 +245,8 @@ def serve_react_assets(filename):
 @app.route('/query/vulnerable', methods=['POST'])
 @limit_requests
 def query_vulnerable():
-    # this endpoint was originally intentionally insecure; it has been updated
-    # to use parameterized queries and proper table normalization
+    # EDUCATIONAL: This endpoint intentionally vulnerable to SQL injection for demonstration
+    # Do NOT use this pattern in production code!
     if not request.is_json:
         return jsonify({
             "status": "error",
@@ -255,24 +255,29 @@ def query_vulnerable():
 
     ensure_db_ready()
     user_input = request.json.get('chat_input', '')
-    table = normalize_table_name(request.json.get('table', 'secrets'))
+    table = request.json.get('table', 'secrets')
+    if table not in QUERYABLE_TABLES:
+        table = 'secrets'
     col = TABLE_LOOKUP_COLUMN.get(table, 'name')
-    # use parameterized query to prevent injection
-    query = f"SELECT * FROM {table} WHERE {col} = ?"
+    # VULNERABLE: String concatenation with user input - susceptible to SQL injection!
+    query = f"SELECT * FROM {table} WHERE {col} = '{user_input}'"
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (user_input,))
+            # DANGER: This is vulnerable to SQL injection!
+            cursor.execute(query)
             result = [dict(row) for row in cursor.fetchall()]
             return jsonify({
                 "status": "success",
-                "data": result
+                "data": result,
+                "query_executed": query  # Show the actual query for educational purposes
             })
     except Exception as e:
-        app.logger.error(f"Error in vulnerable endpoint: {e}")
+        app.logger.error(f"Error in vulnerable endpoint: {str(e)}")
         return jsonify({
             "status": "error",
-            "message": "An error occurred while processing your request"
+            "message": "An error occurred while processing your request",
+            "query_executed": query
         }), 400
 
 @app.route('/query/secure', methods=['POST'])
