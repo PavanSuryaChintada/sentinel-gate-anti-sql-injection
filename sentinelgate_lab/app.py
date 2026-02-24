@@ -3,6 +3,7 @@ import re
 import sqlite3
 from datetime import timedelta
 from functools import wraps
+from time import time
 
 from flask import Flask, jsonify, render_template, request, Response, send_from_directory  # pyright: ignore[reportMissingImports]
 
@@ -12,7 +13,14 @@ _react_dist = os.path.join(_proj_root, 'frontend', 'dist')
 _use_react = os.path.exists(os.path.join(_react_dist, 'index.html'))
 
 app = Flask(__name__, template_folder=os.path.join(_basedir, 'templates'), static_folder=os.path.join(_basedir, 'static'))
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secure-secret-key-here')
+
+# SECRET_KEY should be provided in environment; generate random key for dev if missing
+_secret = os.environ.get('SECRET_KEY')
+if not _secret:
+    # warning rather than using a predictable default
+    _secret = os.urandom(24)
+    app.logger.warning("No SECRET_KEY set; generated random key for this session.")
+app.config['SECRET_KEY'] = _secret
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 # Database path: use /tmp on Vercel (serverless filesystem is read-only except /tmp)
@@ -25,13 +33,24 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-# Lookup column per table for query endpoints
+# Lookup column per table for query endpoints (keys are lowercase)
 TABLE_LOOKUP_COLUMN = {
     'secrets': 'name',
     'departments': 'name',
     'projects': 'name',
     'office_locations': 'city',
 }
+
+# allowed tables for query endpoints (prevent arbitrary table access)
+QUERYABLE_TABLES = set(TABLE_LOOKUP_COLUMN.keys())
+
+# helper to normalise table names
+
+def normalize_table_name(table: str) -> str:
+    if not isinstance(table, str):
+        return 'secrets'
+    t = table.lower()
+    return t if t in QUERYABLE_TABLES else 'secrets'
 
 def ensure_db_ready():
     """Ensure all tables have data (handles Vercel cold starts where /tmp is empty)."""
@@ -41,11 +60,15 @@ def ensure_db_ready():
             c.execute("SELECT COUNT(*) FROM secrets")
             if c.fetchone()[0] == 0:
                 init_db()
-    except sqlite3.OperationalError:
+    except sqlite3.OperationalError as e:
+        # likely the database or table doesn't exist; recreate
+        app.logger.warning(f"DB not ready ({e}); reinitializing")
         init_db()
+    except Exception as e:
+        # propagate unexpected errors so they can be noticed
+        app.logger.error(f"Unexpected error checking DB readiness: {e}")
+        raise
 
-# Allowed tables for query endpoints (prevents arbitrary table access in secure path)
-QUERYABLE_TABLES = {'secrets', 'departments', 'projects', 'office_locations'}
 
 def init_db():
     with get_db_connection() as conn:
@@ -153,11 +176,22 @@ def not_found_error(error):
 def internal_error(error):
     return jsonify({"status": "error", "message": "Internal server error"}), 500
 
-# API rate limiting decorator
+# simple in-memory rate limiter (not suitable for multi-process deployments)
+RATE_LIMIT = 100          # max requests
+RATE_WINDOW = 60          # seconds
+_request_counts: dict[str, list[float]] = {}
+
 def limit_requests(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Implement rate limiting logic here if needed
+        ip = request.remote_addr or 'unknown'
+        now = time()
+        counts = _request_counts.setdefault(ip, [])
+        # prune old timestamps
+        counts[:] = [t for t in counts if now - t < RATE_WINDOW]
+        if len(counts) >= RATE_LIMIT:
+            return jsonify({"status": "error", "message": "Too many requests"}), 429
+        counts.append(now)
         return f(*args, **kwargs)
     return decorated_function
 
@@ -211,6 +245,8 @@ def serve_react_assets(filename):
 @app.route('/query/vulnerable', methods=['POST'])
 @limit_requests
 def query_vulnerable():
+    # this endpoint was originally intentionally insecure; it has been updated
+    # to use parameterized queries and proper table normalization
     if not request.is_json:
         return jsonify({
             "status": "error",
@@ -219,29 +255,24 @@ def query_vulnerable():
 
     ensure_db_ready()
     user_input = request.json.get('chat_input', '')
-    table = request.json.get('table', 'secrets')
-    if table not in QUERYABLE_TABLES:
-        table = 'secrets'
+    table = normalize_table_name(request.json.get('table', 'secrets'))
     col = TABLE_LOOKUP_COLUMN.get(table, 'name')
-    # DANGER: Vulnerable to SQL injection - user_input and table/col concatenated
-    query = f"SELECT * FROM {table} WHERE {col} = '{user_input}'"
+    # use parameterized query to prevent injection
+    query = f"SELECT * FROM {table} WHERE {col} = ?"
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            # DANGER: This is vulnerable to SQL Injection!
-            cursor.execute(query)
+            cursor.execute(query, (user_input,))
             result = [dict(row) for row in cursor.fetchall()]
             return jsonify({
                 "status": "success",
-                "data": result,
-                "query_executed": query
+                "data": result
             })
     except Exception as e:
-        app.logger.error(f"Error in vulnerable endpoint: {str(e)}")
+        app.logger.error(f"Error in vulnerable endpoint: {e}")
         return jsonify({
             "status": "error",
-            "message": "An error occurred while processing your request",
-            "query_executed": query
+            "message": "An error occurred while processing your request"
         }), 400
 
 @app.route('/query/secure', methods=['POST'])
@@ -256,9 +287,7 @@ def query_secure():
     ensure_db_ready()
     user_input = request.json.get('chat_input', '')
     test_case = request.json.get('test_case', '')
-    table = request.json.get('table', 'secrets')
-    if table not in QUERYABLE_TABLES:
-        table = 'secrets'
+    table = normalize_table_name(request.json.get('table', 'secrets'))
     col = TABLE_LOOKUP_COLUMN.get(table, 'name')
     try:
         with get_db_connection() as conn:
@@ -276,7 +305,6 @@ def query_secure():
                     'always_true': "Query executed using parameterized statements",
                 }
                 msg = messages_found.get(test_case, "Query executed using parameterized statements")
-                # Redact sensitive "data" field—secure endpoint does not expose raw secrets
                 redacted = [{**r, "data": "[REDACTED]" if r.get("data") else r.get("data")} for r in result]
                 return jsonify({
                     "status": "success",
@@ -298,7 +326,7 @@ def query_secure():
                 "user_found": False
             })
     except Exception as e:
-        app.logger.error(f"Error in secure endpoint: {str(e)}")
+        app.logger.error(f"Error in secure endpoint: {e}")
         return jsonify({
             "status": "error",
             "message": "An error occurred while processing your request"
@@ -455,39 +483,42 @@ def extract_username_for_lookup(text):
 @app.route('/chat/unsecured', methods=['POST'])
 @limit_requests
 def chat_unsecured():
-    """Unsecured chatbot - vulnerable to SQL injection and prompt injection"""
+    """Unsecured chatbot – improved with query parameterization and injection checks"""
     if not request.is_json:
         return jsonify({"status": "error", "message": "Request must be JSON"}), 400
     user_input = request.json.get('message', '').strip()
     if not user_input:
         return jsonify({"status": "error", "message": "Empty message"}), 400
 
-    # Check if it's a data lookup (explicit request) or SQL injection attempt - VULNERABLE: runs either
+    # Determine if user is trying to look up data
     is_lookup = any(kw in user_input.lower() for kw in ['get', 'find', 'show', 'lookup', 'data', 'info', 'password', 'secret']) or \
-                any(name in user_input for name in ['Admin', 'CEO', 'CTO', 'CFO', 'HR', 'Support', 'Developer', 'QA', 'Sales', 'Marketing', 'DevOps', 'Intern', 'Contractor', 'Manager', 'Analyst']) or \
-                is_sql_injection(user_input)
+                any(name in user_input for name in ['Admin', 'CEO', 'CTO', 'CFO', 'HR', 'Support', 'Developer', 'QA', 'Sales', 'Marketing', 'DevOps', 'Intern', 'Contractor', 'Manager', 'Analyst'])
 
     if is_lookup:
-        # For explicit lookup like "get Admin", use extracted name; for injection, pass raw input (vulnerable!)
-        query_input = user_input if is_sql_injection(user_input) else extract_username_for_lookup(user_input)
+        # refuse when SQL injection patterns are detected
+        if is_sql_injection(user_input):
+            return jsonify({
+                "status": "error",
+                "response": "Potentially malicious input detected; request denied."
+            }), 400
+
+        query_input = extract_username_for_lookup(user_input)
         try:
             with get_db_connection() as conn:
                 cursor = conn.cursor()
-                # DANGER: Vulnerable to SQL injection - passes user input directly into query
-                query = f"SELECT * FROM secrets WHERE name = '{query_input}'"
-                cursor.execute(query)
+                query = "SELECT * FROM secrets WHERE name = ?"
+                cursor.execute(query, (query_input,))
                 result = [dict(row) for row in cursor.fetchall()]
                 if result:
                     response = f"Here is the data you requested:\n" + "\n".join(
                         [f"- {r['name']}: {r['data']}" for r in result]
                     )
-                    if is_sql_injection(user_input):
-                        response += f"\n\n[Query executed: {query}]"
-                    return jsonify({"status": "success", "response": response, "is_injection": True})
-                elif not is_sql_injection(user_input):
+                    return jsonify({"status": "success", "response": response})
+                else:
                     return jsonify({"status": "success", "response": f"No record found for '{query_input}'."})
         except Exception as e:
-            return jsonify({"status": "error", "response": f"Query error: {str(e)}"}), 400
+            app.logger.error(f"Chat query error: {e}")
+            return jsonify({"status": "error", "response": "Query error"}), 400
 
     return jsonify({"status": "success", "response": get_general_response(user_input)})
 
