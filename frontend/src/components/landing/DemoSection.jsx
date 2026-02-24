@@ -65,11 +65,21 @@ function QueryPanel({ type, input, table, result, loading, queryExecuted, onInpu
       )}
       {!loading && result && (
         <div className="mt-4 p-4 rounded-lg bg-[#0A0A0A] border border-neutral-800 overflow-auto max-h-48">
-          <pre className="text-xs text-neutral-400 font-mono whitespace-pre-wrap">
-            {JSON.stringify(result, null, 2)}
-          </pre>
-          {queryExecuted && (
-            <pre className="text-xs text-[#D9FF00] font-mono mt-2">{queryExecuted}</pre>
+          {result && result.status === 'error' ? (
+            <div className="text-sm text-red-400 font-mono">
+              <strong>Error:</strong> {result.message || 'Unknown error'}
+              {result.statusCode ? <div className="text-xs text-neutral-500 mt-1">HTTP {result.statusCode}</div> : null}
+              {result.raw ? <pre className="text-xs text-neutral-500 font-mono mt-2 whitespace-pre-wrap">{result.raw}</pre> : null}
+            </div>
+          ) : (
+            <>
+              <pre className="text-xs text-neutral-400 font-mono whitespace-pre-wrap">
+                {JSON.stringify(result, null, 2)}
+              </pre>
+              {queryExecuted && (
+                <pre className="text-xs text-[#D9FF00] font-mono mt-2">{queryExecuted}</pre>
+              )}
+            </>
           )}
         </div>
       )}
