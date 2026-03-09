@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Interactive SQLite shell for SentinelGate's users.db.
+Interactive SQLite shell for CipherShield's users.db.
 Usage:
   python db_shell.py              # Interactive mode
   python db_shell.py "SELECT * FROM secrets"   # Run one query

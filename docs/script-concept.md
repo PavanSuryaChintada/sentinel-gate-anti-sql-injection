@@ -1,10 +1,10 @@
-# SentinelGate Script Concept: Revolutionary Client-Side Protection
+# CipherShield Script Concept: Revolutionary Client-Side Protection
 
-This document explains the innovative script-based approach that makes SentinelGate unique in the cybersecurity landscape, providing instant, zero-configuration SQL injection protection.
+This document explains the innovative script-based approach that makes CipherShield unique in the cybersecurity landscape, providing instant, zero-configuration SQL injection protection.
 
 ## 🧠 The Revolutionary Concept
 
-### Traditional vs. SentinelGate Approach
+### Traditional vs. CipherShield Approach
 
 ```
 Traditional Security Model:
@@ -16,7 +16,7 @@ Traditional Security Model:
 │ • Parameters    │    │ • Server Load   │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 
-SentinelGate Model:
+CipherShield Model:
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   User Input    │───►│  Client-Side    │───►│  Safe Request   │
 │                 │    │  Protection     │    │                 │
@@ -30,7 +30,7 @@ SentinelGate Model:
 
 ### The Paradigm Shift
 
-SentinelGate introduces a **fundamental paradigm shift** in web security by moving protection **before** the request reaches the server:
+CipherShield introduces a **fundamental paradigm shift** in web security by moving protection **before** the request reaches the server:
 
 #### 1. Zero-Trust Input Processing
 ```javascript
@@ -306,7 +306,7 @@ class BehavioralIntelligence {
 
 ### Hybrid ML Architecture
 
-SentinelGate combines **multiple ML approaches** for comprehensive protection:
+CipherShield combines **multiple ML approaches** for comprehensive protection:
 
 #### 1. Real-Time Classification
 ```javascript
@@ -622,10 +622,10 @@ class AdaptiveLearningSystem {
 
 #### Protection Effectiveness
 ```
-SentinelGate vs Traditional Security:
+CipherShield vs Traditional Security:
 
 ┌─────────────────────────┬─────────────┬─────────────┐
-│ Metric                  │ Traditional │ SentinelGate│
+│ Metric                  │ Traditional │ CipherShield│
 ├─────────────────────────┼─────────────┼─────────────┤
 │ Detection Rate          │ 85.3%       │ 99.7%       │
 │ False Positive Rate     │ 2.1%        │ 0.08%       │
@@ -661,8 +661,8 @@ Production Deployment Metrics:
 <!-- Traditional security requires complex setup -->
 <!-- WAF configuration, server changes, database modifications -->
 
-<!-- SentinelGate: One line of code -->
-<script src="https://sentinelgate.com/protection.js"></script>
+<!-- CipherShield: One line of code -->
+<script src="https://ciphershield.com/protection.js"></script>
 ```
 
 #### 2. Instant ROI
@@ -676,7 +676,7 @@ Traditional Security Implementation:
 │ Total First Year Cost   │ $425K+      │
 └─────────────────────────┘
 
-SentinelGate Implementation:
+CipherShield Implementation:
 ┌─────────────────────────┐
 │ Implementation Time     │ 5 minutes   │
 │ Monthly Cost            │ $100-500    │

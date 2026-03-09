@@ -8,6 +8,7 @@ __pycache__/
 .Python
 *.db
 users.db
+ml/data/raw/
 
 # Node / React
 frontend/node_modules/

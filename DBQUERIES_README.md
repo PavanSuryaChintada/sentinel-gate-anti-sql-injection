@@ -1,6 +1,6 @@
-# SentinelGate — Database Schema & SQL Commands
+# CipherShield — Database Schema & SQL Commands
 
-This document covers the database schema and SQL commands for the SentinelGate demo.
+This document covers the database schema and SQL commands for the CipherShield demo.
 
 ---
 
@@ -61,7 +61,7 @@ python db_shell.py "SELECT * FROM office_locations"
 # Filter by name
 python db_shell.py "SELECT * FROM secrets WHERE name = 'Admin'"
 python db_shell.py "SELECT * FROM departments WHERE name = 'Engineering'"
-python db_shell.py "SELECT * FROM projects WHERE name = 'SentinelGate Security'"
+python db_shell.py "SELECT * FROM projects WHERE name = 'CipherShield Security'"
 python db_shell.py "SELECT * FROM office_locations WHERE city = 'London'"
 
 # Count records

@@ -1,4 +1,4 @@
-# SentinelGate — SQL Injection Shield
+# CipherShield — SQL Injection Shield
 
 Production-ready SQL injection protection for websites and chatbots. Add one script tag to your site and protect all forms, inputs, and chatboxes from SQL injection attacks.
 
@@ -9,10 +9,10 @@ Production-ready SQL injection protection for websites and chatbots. Add one scr
 Copy this script tag and paste it in your website's `<head>` or before `</body>`:
 
 ```html
-<script src="https://your-domain.com/sentinel-gate.js"></script>
+<script src="https://your-domain.com/cipher-shield.js"></script>
 ```
 
-Replace `https://your-domain.com` with your deployed SentinelGate URL (or use our demo URL after deployment). That's it. No extensions, no configuration—your forms and inputs are now protected.
+Replace `https://your-domain.com` with your deployed CipherShield URL (or use our demo URL after deployment). That's it. No extensions, no configuration—your forms and inputs are now protected.
 
 ---
 
@@ -65,7 +65,7 @@ Remove or rename `frontend/dist` so Flask falls back to the original `index.html
 - `frontend/` — React app (Vite + React)
   - `src/components/` — Reusable UI components (Navbar, QueryPanel, ChatbotModal, etc.)
   - Add new components here for easy extension
-- `sentinelgate_lab/static/sentinel-gate.js` — The production script (100+ patterns)
+- `sentinelgate_lab/static/cipher-shield.js` — The production script (100+ patterns)
 - `db_shell.py` — Interactive SQLite shell for the database
 - `requirements.txt` — Python dependencies
 
@@ -78,7 +78,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for Vercel, Render, and Railway instructions.
 After deploying, share your URL with clients. They add one line to their codebase:
 
 ```html
-<script src="https://your-sentinelgate-app.vercel.app/sentinel-gate.js"></script>
+<script src="https://your-ciphershield-app.vercel.app/cipher-shield.js"></script>
 ```
 
 For the landing page script tag to show the deployed URL instead of localhost, set `VITE_SCRIPT_BASE=https://your-app-url` before running `npm run build` in the frontend.

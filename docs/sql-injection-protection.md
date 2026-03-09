@@ -1,10 +1,10 @@
 # SQL Injection Protection Mechanisms
 
-This document details the comprehensive SQL injection protection mechanisms implemented in SentinelGate, covering both rule-based detection and machine learning approaches.
+This document details the comprehensive SQL injection protection mechanisms implemented in CipherShield, covering both rule-based detection and machine learning approaches.
 
 ## 🛡️ Protection Architecture Overview
 
-SentinelGate employs a **multi-layered defense strategy** that provides comprehensive protection against SQL injection attacks:
+CipherShield employs a **multi-layered defense strategy** that provides comprehensive protection against SQL injection attacks:
 
 ```
 User Input

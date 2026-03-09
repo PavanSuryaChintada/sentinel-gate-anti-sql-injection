@@ -1,10 +1,10 @@
 # Machine Learning Model for SQL Injection Detection
 
-This document provides a comprehensive overview of the machine learning component in SentinelGate, which adds intelligent detection capabilities beyond traditional pattern matching.
+This document provides a comprehensive overview of the machine learning component in CipherShield, which adds intelligent detection capabilities beyond traditional pattern matching.
 
 ## 🧠 ML Architecture Overview
 
-SentinelGate employs a **hybrid detection system** that combines rule-based pattern matching with machine learning classification:
+CipherShield employs a **hybrid detection system** that combines rule-based pattern matching with machine learning classification:
 
 ```
 Input Text
@@ -356,7 +356,7 @@ class SQLInjectionClassifier:
                 result['confidence'] >= self.threshold)
 ```
 
-### Integration with SentinelGate
+### Integration with CipherShield
 
 ```javascript
 // Client-side integration

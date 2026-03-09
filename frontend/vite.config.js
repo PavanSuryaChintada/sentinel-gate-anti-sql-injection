@@ -10,7 +10,7 @@ export default defineConfig({
       '/chat': 'http://localhost:5001',
       '/reset': 'http://localhost:5001',
       '/version': 'http://localhost:5001',
-      '/sentinel-gate.js': 'http://localhost:5001',
+      '/cipher-shield.js': 'http://localhost:5001',
     },
   },
 })

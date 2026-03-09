@@ -1,12 +1,12 @@
 # Experimental Results and Analysis
 
-This document presents comprehensive experimental results validating the SentinelGate framework, including statistical analysis, performance benchmarks, and comparative studies against existing solutions.
+This document presents comprehensive experimental results validating the CipherShield framework, including statistical analysis, performance benchmarks, and comparative studies against existing solutions.
 
 ## 📊 Executive Summary of Results
 
 ### Key Findings
 
-| Metric | SentinelGate | Traditional WAF | Server-Side ML | Statistical Significance |
+| Metric | CipherShield | Traditional WAF | Server-Side ML | Statistical Significance |
 |--------|--------------|----------------|----------------|-------------------------|
 | **Detection Accuracy** | 99.73% | 85.31% | 91.74% | p < 0.001 |
 | **False Positive Rate** | 0.08% | 2.13% | 1.21% | p < 0.001 |
@@ -43,7 +43,7 @@ Total Test Dataset: 250,000 samples
 
 #### Detailed Performance Matrix
 
-| Attack Category | SentinelGate | Traditional WAF | Server-Side ML | Improvement |
+| Attack Category | CipherShield | Traditional WAF | Server-Side ML | Improvement |
 |-----------------|--------------|----------------|----------------|-------------|
 | **Classic SQLi** | 99.95% | 92.13% | 95.67% | +7.82% |
 | **Union-Based** | 99.87% | 88.45% | 94.23% | +11.42% |
@@ -53,7 +53,7 @@ Total Test Dataset: 250,000 samples
 
 #### Evasion Technique Detection
 
-| Evasion Method | SentinelGate | Traditional WAF | Server-Side ML | Success Rate |
+| Evasion Method | CipherShield | Traditional WAF | Server-Side ML | Success Rate |
 |----------------|--------------|----------------|----------------|--------------|
 | **URL Encoding** | 99.84% | 67.23% | 89.45% | +32.61% |
 | **Hex Encoding** | 99.76% | 45.67% | 87.23% | +54.09% |
@@ -73,16 +73,16 @@ degrees_of_freedom = (3, 9996)
 
 # Post-hoc Tukey HSD results
 tukey_results = {
-    'SentinelGate vs WAF': {'mean_diff': 14.42, 'p_adj': 0.001},
-    'SentinelGate vs ServerML': {'mean_diff': 7.99, 'p_adj': 0.001},
+    'CipherShield vs WAF': {'mean_diff': 14.42, 'p_adj': 0.001},
+    'CipherShield vs ServerML': {'mean_diff': 7.99, 'p_adj': 0.001},
     'WAF vs ServerML': {'mean_diff': -6.43, 'p_adj': 0.001}
 }
 ```
 
 #### Effect Size Analysis
 
-- **Cohen's d (SentinelGate vs WAF)**: 3.47 (Large effect)
-- **Cohen's d (SentinelGate vs ServerML)**: 1.89 (Large effect)
+- **Cohen's d (CipherShield vs WAF)**: 3.47 (Large effect)
+- **Cohen's d (CipherShield vs ServerML)**: 1.89 (Large effect)
 - **Eta-squared**: 0.094 (Large effect)
 
 ## ⚡ Experiment 2: Performance Benchmarking
@@ -91,7 +91,7 @@ tukey_results = {
 
 #### Percentile Distribution
 
-| Percentile | SentinelGate | Traditional WAF | Server-Side ML | Improvement |
+| Percentile | CipherShield | Traditional WAF | Server-Side ML | Improvement |
 |------------|--------------|----------------|----------------|-------------|
 | **P50** | 6.8ms | 134.2ms | 38.9ms | 95.3% |
 | **P90** | 11.2ms | 189.7ms | 58.3ms | 94.1% |
@@ -103,17 +103,17 @@ tukey_results = {
 ```python
 load_test_results = {
     '100 req/sec': {
-        'sentinelgate': {'avg_rt': 7.2, 'cpu': 12, 'memory': 45},
+        'ciphershield': {'avg_rt': 7.2, 'cpu': 12, 'memory': 45},
         'waf': {'avg_rt': 142.3, 'cpu': 67, 'memory': 234},
         'server_ml': {'avg_rt': 41.7, 'cpu': 45, 'memory': 178}
     },
     '1000 req/sec': {
-        'sentinelgate': {'avg_rt': 8.1, 'cpu': 18, 'memory': 52},
+        'ciphershield': {'avg_rt': 8.1, 'cpu': 18, 'memory': 52},
         'waf': {'avg_rt': 198.7, 'cpu': 89, 'memory': 456},
         'server_ml': {'avg_rt': 67.3, 'cpu': 78, 'memory': 298}
     },
     '10000 req/sec': {
-        'sentinelgate': {'avg_rt': 12.4, 'cpu': 34, 'memory': 78},
+        'ciphershield': {'avg_rt': 12.4, 'cpu': 34, 'memory': 78},
         'waf': {'avg_rt': 412.9, 'cpu': 156, 'memory': 892},
         'server_ml': {'avg_rt': 134.8, 'cpu': 123, 'memory': 567}
     }
@@ -137,17 +137,17 @@ load_test_results = {
 ```python
 resource_efficiency = {
     'memory_per_request': {
-        'sentinelgate': 0.024,  # MB per request
+        'ciphershield': 0.024,  # MB per request
         'waf': 0.187,
         'server_ml': 0.089
     },
     'cpu_cycles_per_request': {
-        'sentinelgate': 1247,
+        'ciphershield': 1247,
         'waf': 8934,
         'server_ml': 4567
     },
     'network_overhead': {
-        'sentinelgate': 0.012,  # KB per request
+        'ciphershield': 0.012,  # KB per request
         'waf': 0.089,
         'server_ml': 0.034
     }
@@ -214,7 +214,7 @@ ux_metrics = {
 #### User Feedback Analysis
 
 - **Positive Feedback**: 89% of users reported no performance impact
-- **Security Confidence**: 94% felt more secure with SentinelGate
+- **Security Confidence**: 94% felt more secure with CipherShield
 - **Implementation Satisfaction**: 96% would recommend to others
 
 ## 🧠 Experiment 4: Machine Learning Model Analysis
@@ -229,7 +229,7 @@ ux_metrics = {
 | **Gradient Boosting** | 97.89% | 98.23% | 97.56% | 97.89% | 6.8ms |
 | **Neural Network** | 97.45% | 97.89% | 97.01% | 97.45% | 8.9ms |
 | **Transformer Model** | 98.12% | 98.45% | 97.79% | 98.12% | 23.4ms |
-| **Ensemble (SentinelGate)** | 99.73% | 99.81% | 99.65% | 99.73% | 8.2ms |
+| **Ensemble (CipherShield)** | 99.73% | 99.81% | 99.65% | 99.73% | 8.2ms |
 
 #### Feature Importance Analysis
 
@@ -288,7 +288,7 @@ continuous_learning_results = {
 
 #### Attack Success Rates
 
-| Attack Type | Traditional ML | SentinelGate | Improvement |
+| Attack Type | Traditional ML | CipherShield | Improvement |
 |-------------|----------------|--------------|-------------|
 | **FGSM Attack** | 34.7% | 2.3% | 93.4% |
 | **PGD Attack** | 41.2% | 3.1% | 92.5% |

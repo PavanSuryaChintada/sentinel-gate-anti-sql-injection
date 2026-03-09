@@ -1,10 +1,10 @@
 /**
- * SentinelGate - SQL Injection Shield
+ * CipherShield - SQL Injection Shield
  * Production-ready embeddable script. Add to any website via:
- * <script src="https://your-domain.com/sentinel-gate.js"></script>
+ * <script src="https://your-domain.com/cipher-shield.js"></script>
  *
  * Protects forms, inputs, chatboxes, and fetch/XHR from SQL injection.
- * (c) SentinelGate - MIT License
+ * (c) CipherShield - MIT License
  */
 (function () {
   'use strict';
@@ -206,11 +206,11 @@
   var config = getConfig();
 
   function showToast(message) {
-    var existing = document.getElementById('sentinelgate-toast');
+    var existing = document.getElementById('ciphershield-toast');
     if (existing) existing.remove();
 
     var toast = document.createElement('div');
-    toast.id = 'sentinelgate-toast';
+    toast.id = 'ciphershield-toast';
     toast.setAttribute('role', 'alert');
     toast.textContent = message;
     toast.style.cssText = [
@@ -232,9 +232,9 @@
     ].join(';');
 
     var style = document.createElement('style');
-    style.id = 'sentinelgate-styles';
-    style.textContent = '@keyframes sentinelgate-fadein{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}#sentinelgate-toast{animation:sentinelgate-fadein .3s ease}';
-    if (!document.getElementById('sentinelgate-styles')) {
+    style.id = 'ciphershield-styles';
+    style.textContent = '@keyframes ciphershield-fadein{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}#ciphershield-toast{animation:ciphershield-fadein .3s ease}';
+    if (!document.getElementById('ciphershield-styles')) {
       document.head.appendChild(style);
     }
     document.body.appendChild(toast);
@@ -265,8 +265,8 @@
   }
 
   function setupInputProtection(el) {
-    if (el.dataset && el.dataset.sentinelgateProtected) return;
-    if (el.setAttribute) el.setAttribute('data-sentinelgate-protected', 'true');
+    if (el.dataset && el.dataset.ciphershieldProtected) return;
+    if (el.setAttribute) el.setAttribute('data-ciphershield-protected', 'true');
 
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -283,8 +283,8 @@
   }
 
   function setupFormProtection(form) {
-    if (form.dataset && form.dataset.sentinelgateProtected) return;
-    if (form.setAttribute) form.setAttribute('data-sentinelgate-protected', 'true');
+    if (form.dataset && form.dataset.ciphershieldProtected) return;
+    if (form.setAttribute) form.setAttribute('data-ciphershield-protected', 'true');
 
     form.addEventListener('submit', function (e) {
       var inputs = form.querySelectorAll('input[type="text"], input[type="search"], input:not([type]), input[type="email"], textarea, [contenteditable="true"]');
@@ -311,8 +311,8 @@
 
     for (var j = 0; j < sendButtons.length; j++) {
       var btn = sendButtons[j];
-      if (btn.dataset && btn.dataset.sentinelgateProtected) continue;
-      if (btn.setAttribute) btn.setAttribute('data-sentinelgate-protected', 'true');
+      if (btn.dataset && btn.dataset.ciphershieldProtected) continue;
+      if (btn.setAttribute) btn.setAttribute('data-ciphershield-protected', 'true');
       btn.addEventListener('click', function (ev) {
         for (var k = 0; k < inputs.length; k++) {
           var v = inputs[k].contentEditable === 'true' ? (inputs[k].textContent || inputs[k].innerText || '') : (inputs[k].value || '');
@@ -373,13 +373,13 @@
             };
             if (check(parsed)) {
               showToast(config.message);
-              return Promise.reject(new Error('SentinelGate: Request blocked'));
+              return Promise.reject(new Error('CipherShield: Request blocked'));
             }
           }
         } catch (_) {
           if (containsSqlInjection(bodyStr)) {
             showToast(config.message);
-            return Promise.reject(new Error('SentinelGate: Request blocked'));
+            return Promise.reject(new Error('CipherShield: Request blocked'));
           }
         }
       }
@@ -426,7 +426,7 @@
     scanAndProtect();
   }
 
-  window.SentinelGate = {
+  window.CipherShield = {
     version: VERSION,
     check: containsSqlInjection,
     scan: scanAndProtect

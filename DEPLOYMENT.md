@@ -1,9 +1,9 @@
-# SentinelGate Deployment Guide
+# CipherShield Deployment Guide
 
-This guide covers deploying the SentinelGate SQL Injection Shield to production. After deployment, clients can protect their websites by adding one script tag:
+This guide covers deploying the CipherShield SQL Injection Shield to production. After deployment, clients can protect their websites by adding one script tag:
 
 ```html
-<script src="https://your-app-url/sentinel-gate.js"></script>
+<script src="https://your-app-url/cipher-shield.js"></script>
 ```
 
 ---
@@ -31,7 +31,7 @@ Your project is set up for Vercel. The app uses `/tmp` for SQLite when deployed 
 2. **Go to [vercel.com/new](https://vercel.com/new)** and sign in.
 
 3. **Import your repository**:
-   - Click "Import" next to your `sentinelGate` repo
+   - Click "Import" next to your `cipherShield` repo
    - **CRITICAL**: Set **Framework Preset** to **Flask** before deploying (prevents file downloads)
 
 4. **Configure**:
@@ -49,7 +49,7 @@ Your project is set up for Vercel. The app uses `/tmp` for SQLite when deployed 
 npm i -g vercel
 
 # From project root
-cd "c:\Users\chpsu\Documents\git repos\sentinelGate"
+cd "c:\Users\chpsu\Documents\git repos\cipherShield"
 vercel
 
 # Follow prompts: link to existing project or create new one

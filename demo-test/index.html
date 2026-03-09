@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SentinelGate Demo — With Script (Protected)</title>
-  <script src="/sentinel-gate.js"></script>
-  <!-- Fallback: if script failed to load, provide SentinelGate.check so demo always works -->
+  <title>CipherShield Demo — With Script (Protected)</title>
+  <script src="/cipher-shield.js"></script>
+  <!-- Fallback: if script failed to load, provide CipherShield.check so demo always works -->
   <script>
     (function() {
-      if (window.SentinelGate && typeof window.SentinelGate.check === 'function') return;
+      if (window.CipherShield && typeof window.CipherShield.check === 'function') return;
       var DEMO_PATTERNS = [
         /\bOR\s+1\s*=\s*1\b/i, /\bOR\s+'1'\s*=\s*'1'/i, /'\s*OR\s+/i, /'\s*;\s*--/,
         /\bUNION\s+(ALL\s+)?SELECT\b/i, /\bDROP\s+TABLE\b/i, /;\s*DROP\b/i,
@@ -22,7 +22,7 @@
         if ((t.match(/'/g) || []).length >= 2 && /\b(OR|AND|UNION|SELECT|DROP|--|;)\b/i.test(t)) return true;
         return false;
       }
-      window.SentinelGate = { version: '1.0.0-demo', check: demoCheck, scan: function() {} };
+      window.CipherShield = { version: '1.0.0-demo', check: demoCheck, scan: function() {} };
     })();
   </script>
   <style>
@@ -54,7 +54,7 @@
   </style>
 </head>
 <body>
-  <h1>SentinelGate Demo</h1>
+  <h1>CipherShield Demo</h1>
   <div class="nav">
     <a href="/" class="active">With script</a>
     <a href="/no-script.html">Without script</a>
@@ -93,7 +93,7 @@
     var scriptStatusEl = document.getElementById('scriptStatus');
 
     function isScriptLoaded() {
-      return window.SentinelGate && typeof window.SentinelGate.check === 'function';
+      return window.CipherShield && typeof window.CipherShield.check === 'function';
     }
     function updateScriptStatus() {
       if (isScriptLoaded()) {
@@ -125,7 +125,7 @@
         addMsg('Script not loaded — refresh.', 'blocked');
         return;
       }
-      if (window.SentinelGate.check(text)) {
+      if (window.CipherShield.check(text)) {
         addMsg('Malicious input detected. Request blocked for your security.', 'blocked');
         return;
       }

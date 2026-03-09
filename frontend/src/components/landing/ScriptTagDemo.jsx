@@ -12,7 +12,7 @@ export function ScriptTagDemo() {
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const isLocalhost = /localhost|127\.0\.0\.1/.test(origin);
   const base = SCRIPT_BASE || (isLocalhost ? PROD_URL : origin) || PROD_URL;
-  const code = `<script src="${base}/sentinel-gate.js"><\/script>`;
+  const code = `<script src="${base}/cipher-shield.js"><\/script>`;
 
   const handleCopy = async () => {
     try {
@@ -64,7 +64,7 @@ export function ScriptTagDemo() {
               title="Click to copy"
             >
               <code className="text-neutral-300">
-                {`<script src="${base}/sentinel-gate.js"></script>`}
+                {`<script src="${base}/cipher-shield.js"></script>`}
               </code>
             </pre>
           </div>

@@ -1,4 +1,4 @@
-# SentinelGate Demo — Test Anti-SQL Injection
+# CipherShield Demo — Test Anti-SQL Injection
 
 ## Run
 

@@ -1,1 +1,1 @@
-# SentinelGate Lab - SQL Injection Demo
+# CipherShield Lab - SQL Injection Demo

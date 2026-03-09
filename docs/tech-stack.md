@@ -1,10 +1,10 @@
-# SentinelGate Technology Stack
+# CipherShield Technology Stack
 
-This document provides a comprehensive overview of the technologies, frameworks, and tools used in the SentinelGate SQL injection protection system.
+This document provides a comprehensive overview of the technologies, frameworks, and tools used in the CipherShield SQL injection protection system.
 
 ## 🏗️ Architecture Overview
 
-SentinelGate employs a **hybrid client-server architecture** with multiple protection layers:
+CipherShield employs a **hybrid client-server architecture** with multiple protection layers:
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -19,7 +19,7 @@ SentinelGate employs a **hybrid client-server architecture** with multiple prote
 ## 🎯 Frontend Technologies
 
 ### Core JavaScript Protection
-- **Vanilla JavaScript (ES6+)** - Core protection engine in `sentinel-gate.js`
+- **Vanilla JavaScript (ES6+)** - Core protection engine in `cipher-shield.js`
 - **No Dependencies** - Zero external dependencies for maximum compatibility
 - **DOM Monitoring** - Real-time input field monitoring
 - **Fetch/XHR Interception** - API request protection

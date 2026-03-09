@@ -62,7 +62,7 @@ export function SentinelInterceptor() {
           className="text-center mb-12"
         >
           <h2 className="text-4xl font-bold bg-gradient-to-r from-white to-neutral-500 bg-clip-text text-transparent mb-4">
-            Sentinel Interceptor
+            CipherShield Interceptor
           </h2>
           <p className="text-neutral-500">AI-powered threat detection in real-time</p>
         </motion.div>
@@ -103,7 +103,7 @@ export function SentinelInterceptor() {
               )}
             </AnimatePresence>
 
-            {/* Glowing SVG Shield - Sentinel Core */}
+            {/* Glowing SVG Shield - CipherShield Core */}
             <motion.div
               animate={{
                 scale: phase === 'scanning' ? [1, 1.06, 1] : 1,

@@ -1,4 +1,4 @@
-"""Generate placeholder PNG icons for SentinelGate Chrome extension."""
+"""Generate placeholder PNG icons for CipherShield Chrome extension."""
 import base64
 import os
 

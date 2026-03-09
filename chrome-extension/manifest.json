@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "SentinelGate - SQL Injection Shield",
+  "name": "CipherShield - SQL Injection Shield",
   "version": "1.0.0",
   "description": "Protects chatboxes and text inputs across websites from SQL injection attacks. Defense-in-depth for AI chatbots and web forms.",
   "permissions": ["storage"],
@@ -20,7 +20,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "SentinelGate - SQL Injection Shield"
+    "default_title": "CipherShield - SQL Injection Shield"
   },
   "icons": {
     "16": "icons/icon16.png",

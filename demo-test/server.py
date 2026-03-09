@@ -1,5 +1,5 @@
 """
-Standalone demo server - test SentinelGate anti-SQL injection script.
+Standalone demo server - test CipherShield anti-SQL injection script.
 Run from demo-test folder: python server.py
 Then open http://localhost:5050
 """
@@ -11,8 +11,8 @@ from flask import Flask, jsonify, request, send_from_directory
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(THIS_DIR, 'demo.db')
 # Prefer script inside demo-test so demo works regardless of cwd
-SCRIPT_LOCAL = os.path.join(THIS_DIR, 'sentinel-gate.js')
-SCRIPT_PATH = SCRIPT_LOCAL if os.path.exists(SCRIPT_LOCAL) else os.path.join(THIS_DIR, '..', 'sentinelgate_lab', 'static', 'sentinel-gate.js')
+SCRIPT_LOCAL = os.path.join(THIS_DIR, 'cipher-shield.js')
+SCRIPT_PATH = SCRIPT_LOCAL if os.path.exists(SCRIPT_LOCAL) else os.path.join(THIS_DIR, '..', 'sentinelgate_lab', 'static', 'cipher-shield.js')
 
 app = Flask(__name__, static_folder=THIS_DIR)
 
@@ -64,11 +64,11 @@ def index():
 def no_script():
     return send_from_directory(THIS_DIR, 'no-script.html', mimetype='text/html')
 
-@app.route('/sentinel-gate.js')
+@app.route('/cipher-shield.js')
 def script():
     if os.path.exists(SCRIPT_PATH):
-        return send_from_directory(os.path.dirname(SCRIPT_PATH), 'sentinel-gate.js', mimetype='application/javascript')
-    return jsonify({"error": "Script not found. Copy sentinelgate_lab/static/sentinel-gate.js to demo-test/ or run server from project root."}), 404
+        return send_from_directory(os.path.dirname(SCRIPT_PATH), 'cipher-shield.js', mimetype='application/javascript')
+    return jsonify({"error": "Script not found. Copy sentinelgate_lab/static/cipher-shield.js to demo-test/ or run server from project root."}), 404
 
 @app.route('/chat/unsecured', methods=['POST'])
 def chat():
@@ -103,7 +103,7 @@ def chat():
 if __name__ == '__main__':
     init_db()
     print('')
-    print('  SentinelGate Demo — http://localhost:5050')
+    print('  CipherShield Demo — http://localhost:5050')
     print('  /            = With script (injections BLOCKED)')
     print('  /no-script   = Without script (injections reach DB)')
     print('')

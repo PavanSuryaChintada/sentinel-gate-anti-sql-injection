@@ -1,8 +1,8 @@
-# 📚 SentinelGate Documentation Guide
+# 📚 CipherShield Documentation Guide
 
 **🎯 IMPORTANT: Read This First - Documentation Navigation Guide**
 
-This guide provides the optimal reading order for understanding SentinelGate comprehensively. Follow the sequence below for maximum clarity and learning effectiveness.
+This guide provides the optimal reading order for understanding CipherShield comprehensively. Follow the sequence below for maximum clarity and learning effectiveness.
 
 ## 🗺️ Recommended Reading Order
 
@@ -285,14 +285,14 @@ README.md → SQL Injection Dangers → Threat Landscape → SQL Injection Prote
 
 ### 📧 Additional Resources
 
-- **GitHub Repository**: [Project Source Code](https://github.com/sentinelgate/sentinel-gate-anti-sql-injection)
-- **Live Demo**: [Interactive Demo](https://demo.sentinelgate.com)
-- **Community**: [Discord Server](https://discord.gg/sentinelgate)
-- **Support**: [Email Support](mailto:support@sentinelgate.com)
+- **GitHub Repository**: [Project Source Code](https://github.com/ciphershield/sentinel-gate-anti-sql-injection)
+- **Live Demo**: [Interactive Demo](https://demo.ciphershield.com)
+- **Community**: [Discord Server](https://discord.gg/ciphershield)
+- **Support**: [Email Support](mailto:support@ciphershield.com)
 
 ---
 
-**📌 Bookmark This Guide**: This is your navigation hub for all SentinelGate documentation.
+**📌 Bookmark This Guide**: This is your navigation hub for all CipherShield documentation.
 
 **🔄 Last Updated**: March 2026  
 **📊 Total Documentation**: 13 comprehensive documents  

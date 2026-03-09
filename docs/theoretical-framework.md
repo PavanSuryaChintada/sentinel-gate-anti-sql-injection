@@ -1,6 +1,6 @@
 # Theoretical Framework for Client-Side SQL Injection Protection
 
-This document presents the comprehensive theoretical foundation underlying SentinelGate's innovative approach to SQL injection detection and prevention, suitable for academic publication and research reference.
+This document presents the comprehensive theoretical foundation underlying CipherShield's innovative approach to SQL injection detection and prevention, suitable for academic publication and research reference.
 
 ## 📚 Abstract
 
@@ -23,7 +23,7 @@ Existing solutions primarily focus on server-side detection (Kumar et al., 2024;
 
 ### Our Contribution
 
-We present SentinelGate, a revolutionary client-side SQL injection protection framework that:
+We present CipherShield, a revolutionary client-side SQL injection protection framework that:
 
 1. **Paradigm Shift**: Moves security validation to pre-execution phase
 2. **Hybrid Architecture**: Combines rule-based and ML-based detection
@@ -315,7 +315,7 @@ where $b$ and $c$ are discordant pairs.
 - **Response Time**: 45ms
 - **Server Load**: Medium
 
-#### SentinelGate
+#### CipherShield
 - **Detection Rate**: 99.7%
 - **False Positive Rate**: 0.08%
 - **Response Time**: 8ms
@@ -361,7 +361,7 @@ All performance improvements are statistically significant ($p < 0.001$) based o
 
 ## 📋 Conclusion
 
-This paper presents SentinelGate, a revolutionary client-side SQL injection protection framework that achieves unprecedented detection rates while maintaining minimal performance impact. Our theoretical foundation combines information theory, machine learning, and performance optimization to create a robust, scalable security solution.
+This paper presents CipherShield, a revolutionary client-side SQL injection protection framework that achieves unprecedented detection rates while maintaining minimal performance impact. Our theoretical foundation combines information theory, machine learning, and performance optimization to create a robust, scalable security solution.
 
 The framework's 99.7% detection rate and 0.08% false positive rate represent significant improvements over existing solutions, while the sub-millisecond response time enables real-time protection without user experience degradation.
 

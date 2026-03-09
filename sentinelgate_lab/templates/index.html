@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>SQL Injection Demo | SentinelGate</title>
+    <title>SQL Injection Demo | CipherShield</title>
     <link rel="icon" type="image/png" href="https://res.cloudinary.com/dsqeawg67/image/upload/v1771192756/3e2621d8-a26b-4003-a948-c72ec29443a9-removebg-preview_rkugt3.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -234,7 +234,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 py-3">
         <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
             <a class="navbar-brand" href="#">
-                <i class="bi bi-shield-lock-fill me-2"></i>SentinelGate
+                <i class="bi bi-shield-lock-fill me-2"></i>CipherShield
             </a>
             <div class="d-flex gap-2 flex-shrink-0 align-items-center">
                 <a href="#database-schema" class="btn btn-outline-secondary btn-sm" title="View database schema">
@@ -266,7 +266,7 @@
                 <div class="card-body">
                     <p class="text-muted mb-3">Add this script tag to your website's <code>&lt;head&gt;</code> or before <code>&lt;/body&gt;</code>. All forms, inputs, and chatboxes will be protected from SQL injection. No extensions, no setup—works immediately.</p>
                     <div class="d-flex flex-wrap align-items-center gap-2">
-                        <code class="embed-script-box flex-grow-1" id="embedScriptCode" onclick="copyEmbedScript()" title="Click to copy">&lt;script src="<span id="embedBaseUrl"></span>/sentinel-gate.js"&gt;&lt;/script&gt;</code>
+                        <code class="embed-script-box flex-grow-1" id="embedScriptCode" onclick="copyEmbedScript()" title="Click to copy">&lt;script src="<span id="embedBaseUrl"></span>/cipher-shield.js"&gt;&lt;/script&gt;</code>
                         <button type="button" class="btn btn-success embed-copy-btn" onclick="copyEmbedScript()" title="Copy to clipboard">
                             <i class="bi bi-clipboard"></i> Copy
                         </button>
@@ -587,7 +587,7 @@
                             <div class="col-md-6 col-lg-3">
                                 <div class="p-3 rounded" style="background: rgba(6,214,160,0.06); border: 1px solid rgba(6,214,160,0.2);">
                                     <div class="fw-bold mb-2 text-success"><i class="bi bi-kanban me-1"></i>projects</div>
-                                    <div class="lookup-values-box"><span class="lookup-badge projects">SentinelGate Security</span><span class="lookup-badge projects">Cloud Migration</span><span class="lookup-badge projects">Q4 Campaign</span><span class="lookup-badge projects">CRM Integration</span><span class="lookup-badge projects">Budget Review 2025</span><span class="lookup-badge projects">Infrastructure Upgrade</span></div>
+                                    <div class="lookup-values-box"><span class="lookup-badge projects">CipherShield Security</span><span class="lookup-badge projects">Cloud Migration</span><span class="lookup-badge projects">Q4 Campaign</span><span class="lookup-badge projects">CRM Integration</span><span class="lookup-badge projects">Budget Review 2025</span><span class="lookup-badge projects">Infrastructure Upgrade</span></div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-3">
@@ -794,7 +794,7 @@ cursor.execute(query, (user_input,))</pre>
     <!-- Footer -->
     <footer class="footer mt-5">
         <div class="container text-center">
-            <p class="mb-0">© 2026 SentinelGate SQL Injection Shield. Production-ready protection for your website.</p>
+            <p class="mb-0">© 2026 CipherShield SQL Injection Shield. Production-ready protection for your website.</p>
             <p class="mb-0 text-muted">
                 <small>Copy the script tag above to protect forms, chatboxes & inputs from SQL injection</small>
             </p>
@@ -810,7 +810,7 @@ cursor.execute(query, (user_input,))</pre>
         })();
         function copyEmbedScript() {
             var base = window.location.origin;
-            var code = '<script src="' + base + '/sentinel-gate.js"><\/script>';
+            var code = '<script src="' + base + '/cipher-shield.js"><\/script>';
             navigator.clipboard.writeText(code).then(function () {
                 var btn = document.querySelector('.embed-copy-btn');
                 if (btn) {
@@ -820,7 +820,7 @@ cursor.execute(query, (user_input,))</pre>
                     btn.classList.remove('btn-success');
                     setTimeout(function () { btn.innerHTML = orig; btn.classList.remove('btn-outline-success'); btn.classList.add('btn-success'); }, 2000);
                 }
-            }).catch(function () { alert('Copy failed. Manually copy: <script src="' + base + '/sentinel-gate.js"><\/script>'); });
+            }).catch(function () { alert('Copy failed. Manually copy: <script src="' + base + '/cipher-shield.js"><\/script>'); });
         }
         function showSchemaPanel(tableName) {
             document.querySelectorAll('.schema-panel').forEach(p => p.classList.remove('active'));
@@ -855,7 +855,7 @@ cursor.execute(query, (user_input,))</pre>
         const TABLE_PLACEHOLDERS = {
             secrets: 'e.g. Admin, CEO',
             departments: 'e.g. Engineering, Sales',
-            projects: 'e.g. SentinelGate Security',
+            projects: 'e.g. CipherShield Security',
             office_locations: 'e.g. San Francisco, London'
         };
 

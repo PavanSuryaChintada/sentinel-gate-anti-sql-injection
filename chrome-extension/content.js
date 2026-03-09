@@ -1,5 +1,5 @@
 /**
- * SentinelGate - SQL Injection Shield
+ * CipherShield - SQL Injection Shield
  * Content script that monitors chatboxes and text inputs to detect and block SQL injection attempts.
  * Works across all websites including Newtrea, AI chatbots, and web forms.
  */
@@ -49,19 +49,19 @@
     /'\s*\)\s*--/,
   ];
 
-  const BLOCKED_MESSAGE = '🚫 SentinelGate blocked a potential SQL injection. Your message was not sent.';
+  const BLOCKED_MESSAGE = '🚫 CipherShield blocked a potential SQL injection. Your message was not sent.';
   const TOAST_DURATION = 4000;
 
   let isEnabled = true;
 
   // Load saved preference
-  chrome.storage.sync.get(['sentinelgateEnabled'], (result) => {
-    isEnabled = result.sentinelgateEnabled !== false;
+  chrome.storage.sync.get(['ciphershieldEnabled'], (result) => {
+    isEnabled = result.ciphershieldEnabled !== false;
   });
 
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync' && changes.sentinelgateEnabled) {
-      isEnabled = changes.sentinelgateEnabled.newValue !== false;
+    if (area === 'sync' && changes.ciphershieldEnabled) {
+      isEnabled = changes.ciphershieldEnabled.newValue !== false;
     }
   });
 
@@ -83,7 +83,7 @@
 
   function showToast(message) {
     const toast = document.createElement('div');
-    toast.id = 'sentinelgate-toast';
+    toast.id = 'ciphershield-toast';
     toast.textContent = message;
     toast.style.cssText = `
       position: fixed;
@@ -99,12 +99,12 @@
       font-weight: 500;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       z-index: 2147483647;
-      animation: sentinelgate-fadein 0.3s ease;
+      animation: ciphershield-fadein 0.3s ease;
     `;
 
     const style = document.createElement('style');
     style.textContent = `
-      @keyframes sentinelgate-fadein {
+      @keyframes ciphershield-fadein {
         from { opacity: 0; transform: translateX(-50%) translateY(10px); }
         to { opacity: 1; transform: translateX(-50%) translateY(0); }
       }
@@ -132,8 +132,8 @@
   }
 
   function setupInputProtection(element) {
-    if (element.dataset.sentinelgateProtected) return;
-    element.dataset.sentinelgateProtected = 'true';
+    if (element.dataset.ciphershieldProtected) return;
+    element.dataset.ciphershieldProtected = 'true';
 
     element.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -151,8 +151,8 @@
   }
 
   function setupFormProtection(form) {
-    if (form.dataset.sentinelgateProtected) return;
-    form.dataset.sentinelgateProtected = 'true';
+    if (form.dataset.ciphershieldProtected) return;
+    form.dataset.ciphershieldProtected = 'true';
 
     form.addEventListener('submit', (e) => {
       if (!isEnabled) return;
@@ -185,8 +185,8 @@
     inputs.forEach(setupInputProtection);
 
     sendButtons.forEach((btn) => {
-      if (btn.dataset.sentinelgateProtected) return;
-      btn.dataset.sentinelgateProtected = 'true';
+      if (btn.dataset.ciphershieldProtected) return;
+      btn.dataset.ciphershieldProtected = 'true';
       btn.addEventListener('click', (e) => {
         if (!isEnabled) return;
         for (const input of inputs) {

@@ -1,18 +1,18 @@
-# Getting Started with SentinelGate
+# Getting Started with CipherShield
 
-This guide will help you get SentinelGate up and running in minutes. SentinelGate provides enterprise-grade SQL injection protection with a simple integration model.
+This guide will help you get CipherShield up and running in minutes. CipherShield provides enterprise-grade SQL injection protection with a simple integration model.
 
 ## 🚀 Quick Start (5 Minutes)
 
-### Step 1: Add SentinelGate to Your Website
+### Step 1: Add CipherShield to Your Website
 
 Add this single script tag to your website's `<head>` or before `</body>`:
 
 ```html
-<script src="https://your-sentinelgate-domain.com/sentinel-gate.js"></script>
+<script src="https://your-ciphershield-domain.com/cipher-shield.js"></script>
 ```
 
-**Replace `https://your-sentinelgate-domain.com` with your deployed SentinelGate URL.**
+**Replace `https://your-ciphershield-domain.com` with your deployed CipherShield URL.**
 
 ### Step 2: Test the Protection
 
@@ -28,7 +28,7 @@ These should be **automatically blocked** before reaching your server.
 
 ### Step 3: Monitor Protection
 
-Visit your SentinelGate dashboard to see:
+Visit your CipherShield dashboard to see:
 - Blocked attacks in real-time
 - Attack patterns and sources
 - System performance metrics
@@ -54,7 +54,7 @@ That's it! Your website is now protected against SQL injection attacks.
 
 Easiest option with zero maintenance:
 
-1. **Sign up** for a SentinelGate account
+1. **Sign up** for a CipherShield account
 2. **Get your unique script URL**
 3. **Add one line** to your website
 4. **Done!** Protection is active immediately
@@ -72,8 +72,8 @@ For organizations requiring on-premises deployment:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/sentinel-gate-anti-sql-injection.git
-cd sentinel-gate-anti-sql-injection
+git clone https://github.com/your-org/cipher-shield-anti-sql-injection.git
+cd cipher-shield-anti-sql-injection
 
 # Install backend dependencies
 pip install -r requirements.txt
@@ -88,7 +88,7 @@ cd ..
 python app.py
 ```
 
-Your SentinelGate instance is now running at `http://localhost:5001`
+Your CipherShield instance is now running at `http://localhost:5001`
 
 ### Option 3: Docker Deployment
 
@@ -96,10 +96,10 @@ Containerized deployment for easy scaling:
 
 ```bash
 # Build the Docker image
-docker build -t sentinelgate .
+docker build -t ciphershield .
 
 # Run the container
-docker run -p 5001:5001 sentinelgate
+docker run -p 5001:5001 ciphershield
 ```
 
 ## 🌐 Deployment Platforms
@@ -144,20 +144,20 @@ Customize protection levels by adding configuration before the script:
 
 ```html
 <script>
-window.SentinelGateConfig = {
+window.CipherShieldConfig = {
     blockMessage: "SQL injection detected! Input blocked for security.",
     logLevel: "info",           // debug, info, warn, error
     enableML: true,             // Enable ML detection
     apiEndpoint: "/api/predict" // Custom ML endpoint
 };
 </script>
-<script src="https://your-sentinelgate-domain.com/sentinel-gate.js"></script>
+<script src="https://your-ciphershield-domain.com/cipher-shield.js"></script>
 ```
 
 ### Advanced Configuration
 
 ```javascript
-window.SentinelGateConfig = {
+window.CipherShieldConfig = {
     // Blocking behavior
     blockMessage: "Security violation detected",
     showWarning: true,          // Show warning to user
@@ -243,7 +243,7 @@ const testInputs = [
 ];
 
 async function runTests() {
-    console.log("Testing SentinelGate protection...");
+    console.log("Testing CipherShield protection...");
     
     for (const input of testInputs) {
         try {
@@ -294,7 +294,7 @@ curl -X POST http://localhost:5001/api/predict \
 
 ### Accessing the Dashboard
 
-1. **Navigate** to your SentinelGate URL
+1. **Navigate** to your CipherShield URL
 2. **Click** on "Dashboard" or visit `/dashboard`
 3. **View** real-time attack statistics
 
@@ -312,8 +312,8 @@ curl -X POST http://localhost:5001/api/predict \
 Configure email alerts for high-volume attacks:
 
 ```javascript
-// In your SentinelGate configuration
-window.SentinelGateConfig = {
+// In your CipherShield configuration
+window.CipherShieldConfig = {
     alerts: {
         email: "security@yourcompany.com",
         threshold: 100,  // Alert after 100 blocked attacks
@@ -329,16 +329,16 @@ window.SentinelGateConfig = {
 #### Script Not Loading
 ```html
 <!-- Check the script URL is correct -->
-<script src="https://your-domain.com/sentinel-gate.js"></script>
+<script src="https://your-domain.com/cipher-shield.js"></script>
 
 <!-- Verify the domain is accessible -->
-<!-- Test in browser: https://your-domain.com/sentinel-gate.js -->
+<!-- Test in browser: https://your-domain.com/cipher-shield.js -->
 ```
 
 #### False Positives
 ```javascript
 // Adjust sensitivity
-window.SentinelGateConfig = {
+window.CipherShieldConfig = {
     mlThreshold: 0.8,  // Increase threshold (default: 0.7)
     enableML: false    // Disable ML if too sensitive
 };
@@ -347,7 +347,7 @@ window.SentinelGateConfig = {
 #### Performance Issues
 ```javascript
 // Optimize for high-traffic sites
-window.SentinelGateConfig = {
+window.CipherShieldConfig = {
     cacheSize: 5000,   // Increase cache size
     batchSize: 20,     // Increase batch size
     enableML: false    // Disable ML for maximum performance
@@ -371,7 +371,7 @@ python ml/src/train.py
 Enable detailed logging for troubleshooting:
 
 ```javascript
-window.SentinelGateConfig = {
+window.CipherShieldConfig = {
     logLevel: "debug",
     enableAnalytics: false  // Disable analytics during debugging
 };
@@ -386,7 +386,7 @@ Then check browser console for detailed logs.
 Add business-specific protection rules:
 
 ```javascript
-window.SentinelGateConfig = {
+window.CipherShieldConfig = {
     customPatterns: [
         {
             name: "Admin Privilege Escalation",
@@ -408,7 +408,7 @@ Combine with other security measures:
 
 ```javascript
 // Example: Integration with Google reCAPTCHA
-window.SentinelGateConfig = {
+window.CipherShieldConfig = {
     onBlock: function(input, reason) {
         // Trigger reCAPTCHA for suspicious attempts
         grecaptcha.execute();
@@ -463,9 +463,9 @@ def predict():
 - ❓ [FAQ](./faq.md)
 
 ### Community
-- 💬 [Discord Community](https://discord.gg/sentinelgate)
-- 🐛 [GitHub Issues](https://github.com/your-org/sentinel-gate/issues)
-- 📧 [Email Support](mailto:support@sentinelgate.com)
+- 💬 [Discord Community](https://discord.gg/ciphershield)
+- 🐛 [GitHub Issues](https://github.com/your-org/cipher-shield/issues)
+- 📧 [Email Support](mailto:support@ciphershield.com)
 
 ### Professional Support
 - 🏢 Enterprise support available
@@ -478,4 +478,4 @@ def predict():
 **Last Updated**: March 2026  
 **Support Level**: Community (Enterprise available)  
 
-Need help? Check our [troubleshooting guide](./troubleshooting.md) or [contact support](mailto:support@sentinelgate.com).
+Need help? Check our [troubleshooting guide](./troubleshooting.md) or [contact support](mailto:support@ciphershield.com).

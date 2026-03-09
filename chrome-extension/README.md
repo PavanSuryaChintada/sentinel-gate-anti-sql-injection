@@ -1,4 +1,4 @@
-# SentinelGate - SQL Injection Shield (Chrome Extension)
+# CipherShield - SQL Injection Shield (Chrome Extension)
 
 A Chrome extension that protects chatboxes and text inputs across websites from SQL injection attacks. Defense-in-depth for AI chatbots, Newtrea sites, and web forms.
 
@@ -28,7 +28,7 @@ A Chrome extension that protects chatboxes and text inputs across websites from 
 
 ## Add to Chrome Button (Website Integration)
 
-On your SentinelGate website, the "Add to Chrome" button is in the hero section. **Update the link** after publishing:
+On your CipherShield website, the "Add to Chrome" button is in the hero section. **Update the link** after publishing:
 
 1. Publish the extension to Chrome Web Store
 2. Copy your extension's store URL: `https://chrome.google.com/webstore/detail/extension-name/EXTENSION_ID`

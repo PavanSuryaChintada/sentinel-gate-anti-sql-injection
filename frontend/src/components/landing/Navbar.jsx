@@ -24,7 +24,7 @@ export function Navbar({ onResetDatabase }) {
         <a href="#" className="flex items-center gap-2 text-xl font-bold">
           <Shield className="w-6 h-6 text-[#D9FF00]" />
           <span className="bg-gradient-to-r from-white to-neutral-500 bg-clip-text text-transparent">
-            SentinelGate
+            CipherShield
           </span>
         </a>
         <div className="flex items-center gap-4">

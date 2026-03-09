@@ -1,6 +1,6 @@
 # Research References and Related Work (2024-2025)
 
-This document provides comprehensive references to recent research papers, academic works, and industry reports related to SQL injection detection, machine learning security, and web application protection that inform and contextualize the SentinelGate framework.
+This document provides comprehensive references to recent research papers, academic works, and industry reports related to SQL injection detection, machine learning security, and web application protection that inform and contextualize the CipherShield framework.
 
 ## 📚 Academic Literature Review
 
@@ -71,7 +71,7 @@ This document provides comprehensive references to recent research papers, acade
   - Traditional hash-based vulnerabilities in quantum computing era
   - Need for lattice-based cryptographic approaches
   - Timeline estimates for quantum capability emergence
-- **Relevance**: Future-proofing considerations for SentinelGate
+- **Relevance**: Future-proofing considerations for CipherShield
 
 **7. Behavioral Analysis for Web Security: User Intent Detection**
 - **Authors**: Anderson, M., & Wilson, S.
@@ -106,7 +106,7 @@ This document provides comprehensive references to recent research papers, acade
   - Federated approaches enable privacy-preserving threat intelligence sharing
   - 89% of centralized model performance achieved
   - Communication overhead requires optimization
-- **Relevance**: Future enhancement possibilities for SentinelGate
+- **Relevance**: Future enhancement possibilities for CipherShield
 
 **10. Explainable AI in Security: Building Trust and Transparency**
 - **Authors**: Wilson, E., & Davis, F.
@@ -162,7 +162,7 @@ This document provides comprehensive references to recent research papers, acade
   - Average cost of SQL injection breaches: $5.2 million
   - Security AI and automation reduce breach costs by 40%
   - Zero trust architecture saves $1.76 million per breach
-- **Relevance**: ROI justification for SentinelGate investment
+- **Relevance**: ROI justification for CipherShield investment
 
 **15. OWASP Top 10 2024**
 - **Organization**: OWASP Foundation
@@ -400,21 +400,21 @@ This document provides comprehensive references to recent research papers, acade
 
 ### Academic Citation Format
 
-For SentinelGate-related research, please use the following citation format:
+For CipherShield-related research, please use the following citation format:
 
 ```bibtex
-@software{sentinelgate_2024,
-  title={SentinelGate: Client-Side SQL Injection Protection Framework},
-  author={SentinelGate Team},
+@software{ciphershield_2024,
+  title={CipherShield: Client-Side SQL Injection Protection Framework},
+  author={CipherShield Team},
   year={2024},
-  url={https://github.com/sentinelgate/sentinel-gate-anti-sql-injection},
+  url={https://github.com/ciphershield/sentinel-gate-anti-sql-injection},
   version={1.0.0}
 }
 ```
 
 ### Related Work Citation Matrix
 
-| Research Area | Key Papers (2024-25) | SentinelGate Contribution |
+| Research Area | Key Papers (2024-25) | CipherShield Contribution |
 |---------------|---------------------|---------------------------|
 | **SQLi Detection** | [1][3][5] | Client-side pre-execution approach |
 | **ML Security** | [2][8][11] | Real-time ensemble optimization |
@@ -448,4 +448,4 @@ For SentinelGate-related research, please use the following citation format:
 **Coverage Period**: 2024-2025  
 **Next Review**: Quarterly updates planned
 
-This reference list provides a comprehensive foundation for understanding the current state of SQL injection detection research and positioning SentinelGate within the broader academic and industry landscape.
+This reference list provides a comprehensive foundation for understanding the current state of SQL injection detection research and positioning CipherShield within the broader academic and industry landscape.

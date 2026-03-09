@@ -137,7 +137,7 @@ def init_db():
         ''')
         c.execute("DELETE FROM projects")
         projects_data = [
-            (1, 'SentinelGate Security', 1, 'active', 150000.00, '2025-06-30'),
+            (1, 'CipherShield Security', 1, 'active', 150000.00, '2025-06-30'),
             (2, 'Cloud Migration', 1, 'active', 320000.00, '2025-09-15'),
             (3, 'Q4 Campaign', 3, 'completed', 75000.00, '2024-12-31'),
             (4, 'CRM Integration', 2, 'active', 45000.00, '2025-04-30'),
@@ -201,11 +201,11 @@ def version():
     return jsonify({"version": "v2-no-navbar-buttons", "template": "index.html"})
 
 
-@app.route('/sentinel-gate.js')
+@app.route('/cipher-shield.js')
 def serve_sentinel_script():
     """Serve the embeddable SQL injection shield script with correct origin in header comment."""
     static_dir = app.static_folder or os.path.join(_basedir, 'static')
-    path = os.path.join(static_dir, 'sentinel-gate.js')
+    path = os.path.join(static_dir, 'cipher-shield.js')
     with open(path, 'r', encoding='utf-8') as f:
         content = f.read()
     # Inject actual deployed URL into header comment (so viewing the .js file shows correct embed code)

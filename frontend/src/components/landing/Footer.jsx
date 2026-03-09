@@ -7,10 +7,10 @@ export function Footer() {
       <div className="container mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
           <Shield className="w-5 h-5 text-[#D9FF00]" />
-          <span className="font-semibold text-white">SentinelGate</span>
+          <span className="font-semibold text-white">CipherShield</span>
         </div>
         <p className="text-neutral-500 text-sm">
-          © 2026 SentinelGate. AI-driven SQL injection prevention. Production-ready.
+          © 2026 CipherShield. AI-driven SQL injection prevention. Production-ready.
         </p>
       </div>
     </footer>

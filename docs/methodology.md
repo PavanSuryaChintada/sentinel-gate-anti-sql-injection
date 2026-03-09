@@ -1,6 +1,6 @@
 # Research Methodology and Experimental Design
 
-This document details the comprehensive research methodology employed in developing and validating SentinelGate, including experimental design, data collection procedures, and statistical analysis methods suitable for academic publication.
+This document details the comprehensive research methodology employed in developing and validating CipherShield, including experimental design, data collection procedures, and statistical analysis methods suitable for academic publication.
 
 ## 🎯 Research Objectives
 
@@ -268,9 +268,9 @@ attack_categories = {
 ```python
 def accuracy_comparison_experiment():
     approaches = [
-        'sentinelgate_hybrid',
-        'sentinelgate_rules_only',
-        'sentinelgate_ml_only',
+        'ciphershield_hybrid',
+        'ciphershield_rules_only',
+        'ciphershield_ml_only',
         'traditional_waf',
         'server_side_ml'
     ]
@@ -532,7 +532,7 @@ def analyze_performance_trends(time_series_data):
 - **Setting Validity**: Multiple deployment environments
 
 #### Replication Package
-- **Code Repository**: https://github.com/sentinelgate/experiments
+- **Code Repository**: https://github.com/ciphershield/experiments
 - **Datasets**: Anonymized and sanitized datasets
 - **Scripts**: Complete analysis scripts
 - **Documentation**: Detailed replication instructions

@@ -1,7 +1,7 @@
 export const TABLE_PLACEHOLDERS = {
   secrets: 'e.g. Admin, CEO',
   departments: 'e.g. Engineering, Sales',
-  projects: 'e.g. SentinelGate Security',
+  projects: 'e.g. CipherShield Security',
   office_locations: 'e.g. San Francisco, London',
 };
 
@@ -86,7 +86,7 @@ export const SCHEMA_TABLES = {
       { name: 'deadline', type: 'TEXT', desc: 'Target date (YYYY-MM-DD)' },
     ],
     lookup: 'name',
-    values: ['SentinelGate Security', 'Cloud Migration', 'Q4 Campaign', 'CRM Integration', 'Budget Review 2025', 'Infrastructure Upgrade'],
+    values: ['CipherShield Security', 'Cloud Migration', 'Q4 Campaign', 'CRM Integration', 'Budget Review 2025', 'Infrastructure Upgrade'],
   },
   office_locations: {
     columns: [

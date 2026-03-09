@@ -1,18 +1,18 @@
-# SentinelGate Documentation Hub
+# CipherShield Documentation Hub
 
-Welcome to the comprehensive documentation for **SentinelGate** — a production-ready SQL injection protection system for websites and chatbots.
+Welcome to the comprehensive documentation for **CipherShield** — a production-ready SQL injection protection system for websites and chatbots.
 
 ## 📚 Documentation Overview
 
-This documentation covers everything you need to understand, deploy, and extend SentinelGate:
+This documentation covers everything you need to understand, deploy, and extend CipherShield:
 
 ### 🚀 Quick Start
 - [Getting Started Guide](./getting-started.md) - Setup and basic usage
 - [Installation Guide](./installation.md) - Detailed installation instructions
-- [Quick Demo](./quick-demo.md) - See SentinelGate in action
+- [Quick Demo](./quick-demo.md) - See CipherShield in action
 
 ### 🛡️ Core Security Features
-- [SQL Injection Protection](./sql-injection-protection.md) - How SentinelGate prevents SQLi attacks
+- [SQL Injection Protection](./sql-injection-protection.md) - How CipherShield prevents SQLi attacks
 - [Detection Patterns](./detection-patterns.md) - Complete list of 100+ attack patterns
 - [Client-Side Security](./client-side-security.md) - Browser-based protection mechanisms
 
@@ -32,7 +32,7 @@ This documentation covers everything you need to understand, deploy, and extend 
 - [Startup Security Risks](./startup-security-risks.md) - Specific threats to startups
 
 ### 🔧 Development & Deployment
-- [Development Guide](./development.md) - Contributing and extending SentinelGate
+- [Development Guide](./development.md) - Contributing and extending CipherShield
 - [Deployment Guide](./deployment.md) - Production deployment options
 - [API Reference](./api-reference.md) - Complete API documentation
 
@@ -48,10 +48,10 @@ This documentation covers everything you need to understand, deploy, and extend 
 
 ## 🎯 Project Mission
 
-SentinelGate provides **enterprise-grade SQL injection protection** with a simple integration model:
+CipherShield provides **enterprise-grade SQL injection protection** with a simple integration model:
 
 ```html
-<script src="https://your-domain.com/sentinel-gate.js"></script>
+<script src="https://your-domain.com/cipher-shield.js"></script>
 ```
 
 **One line of code protects your entire web application** from SQL injection attacks, making enterprise security accessible to businesses of all sizes.
