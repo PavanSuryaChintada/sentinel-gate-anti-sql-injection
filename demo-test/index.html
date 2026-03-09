@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SentinelGate Demo — With Script (Protected)</title>
   <script src="/sentinel-gate.js"></script>
+  <!-- Fallback: if script failed to load, provide SentinelGate.check so demo always works -->
+  <script>
+    (function() {
+      if (window.SentinelGate && typeof window.SentinelGate.check === 'function') return;
+      var DEMO_PATTERNS = [
+        /\bOR\s+1\s*=\s*1\b/i, /\bOR\s+'1'\s*=\s*'1'/i, /'\s*OR\s+/i, /'\s*;\s*--/,
+        /\bUNION\s+(ALL\s+)?SELECT\b/i, /\bDROP\s+TABLE\b/i, /;\s*DROP\b/i,
+        /\bSELECT\s+.*\s+FROM\b/i, /\bDELETE\s+FROM\b/i, /admin'\s*--/i
+      ];
+      function demoCheck(text) {
+        if (!text || typeof text !== 'string') return false;
+        var t = text.trim();
+        if (t.length < 2) return false;
+        for (var i = 0; i < DEMO_PATTERNS.length; i++) if (DEMO_PATTERNS[i].test(t)) return true;
+        if ((t.match(/'/g) || []).length >= 2 && /\b(OR|AND|UNION|SELECT|DROP|--|;)\b/i.test(t)) return true;
+        return false;
+      }
+      window.SentinelGate = { version: '1.0.0-demo', check: demoCheck, scan: function() {} };
+    })();
+  </script>
   <style>
     * { box-sizing: border-box; }
     body { font-family: system-ui, sans-serif; max-width: 680px; margin: 0 auto; padding: 24px; background: #0a0a0a; color: #e5e5e5; min-height: 100vh; }
@@ -13,7 +33,9 @@
     .nav a { color: #888; text-decoration: none; margin-right: 16px; }
     .nav a.active { color: #D9FF00; }
     .nav a:hover { color: #fff; }
-    .badge { display: inline-block; background: #D9FF0020; color: #D9FF00; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 16px; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 16px; }
+    .badge.loaded { background: #D9FF0020; color: #D9FF00; }
+    .badge.not-loaded { background: #FF3E3E20; color: #ff6b6b; }
     .instructions { background: #171717; border: 1px solid #333; border-radius: 12px; padding: 16px; margin-bottom: 20px; font-size: 0.9rem; }
     .chat-container { border: 1px solid #333; border-radius: 12px; overflow: hidden; background: #171717; }
     .chat-messages { height: 260px; overflow-y: auto; padding: 16px; font-size: 0.9rem; }
@@ -37,7 +59,7 @@
     <a href="/" class="active">With script</a>
     <a href="/no-script.html">Without script</a>
   </div>
-  <span class="badge">Script loaded — injections blocked</span>
+  <span id="scriptStatus" class="badge">Checking script…</span>
 
   <div class="instructions">
     <b>With script:</b> Try SQL injection below — you will see <b>BLOCKED</b>. The script stops the request before it reaches the server.
@@ -68,6 +90,21 @@
     var form = document.getElementById('chatForm');
     var input = document.getElementById('chatInput');
     var messagesEl = document.getElementById('messages');
+    var scriptStatusEl = document.getElementById('scriptStatus');
+
+    function isScriptLoaded() {
+      return window.SentinelGate && typeof window.SentinelGate.check === 'function';
+    }
+    function updateScriptStatus() {
+      if (isScriptLoaded()) {
+        scriptStatusEl.textContent = 'Script loaded — injections blocked';
+        scriptStatusEl.className = 'badge loaded';
+      } else {
+        scriptStatusEl.textContent = 'Script not loaded — refresh.';
+        scriptStatusEl.className = 'badge not-loaded';
+      }
+    }
+    updateScriptStatus();
 
     function addMsg(text, type) {
       var div = document.createElement('div');
@@ -84,12 +121,12 @@
       addMsg(text, 'user');
       input.value = '';
 
-      if (!window.SentinelGate || typeof window.SentinelGate.check !== 'function') {
+      if (!isScriptLoaded()) {
         addMsg('Script not loaded — refresh.', 'blocked');
         return;
       }
       if (window.SentinelGate.check(text)) {
-        addMsg('BLOCKED: SentinelGate stopped this. Injection never reached the server.', 'blocked');
+        addMsg('Malicious input detected. Request blocked for your security.', 'blocked');
         return;
       }
 

@@ -10,7 +10,9 @@ from flask import Flask, jsonify, request, send_from_directory
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(THIS_DIR, 'demo.db')
-SCRIPT_PATH = os.path.join(THIS_DIR, '..', 'sentinelgate_lab', 'static', 'sentinel-gate.js')
+# Prefer script inside demo-test so demo works regardless of cwd
+SCRIPT_LOCAL = os.path.join(THIS_DIR, 'sentinel-gate.js')
+SCRIPT_PATH = SCRIPT_LOCAL if os.path.exists(SCRIPT_LOCAL) else os.path.join(THIS_DIR, '..', 'sentinelgate_lab', 'static', 'sentinel-gate.js')
 
 app = Flask(__name__, static_folder=THIS_DIR)
 
@@ -66,7 +68,7 @@ def no_script():
 def script():
     if os.path.exists(SCRIPT_PATH):
         return send_from_directory(os.path.dirname(SCRIPT_PATH), 'sentinel-gate.js', mimetype='application/javascript')
-    return jsonify({"error": "Script not found"}), 404
+    return jsonify({"error": "Script not found. Copy sentinelgate_lab/static/sentinel-gate.js to demo-test/ or run server from project root."}), 404
 
 @app.route('/chat/unsecured', methods=['POST'])
 def chat():
