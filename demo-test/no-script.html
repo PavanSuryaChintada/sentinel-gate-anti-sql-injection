@@ -88,10 +88,12 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text })
-      }).then(function(r) { return r.json(); }).then(function(d) {
+      }).then(function(r) {
+        return r.json();
+      }).then(function(d) {
         addMsg(d.response || d.message || 'OK', d.is_injection ? 'leaked' : 'bot');
       }).catch(function(err) {
-        addMsg('Error: ' + (err.message || ''), 'bot');
+        addMsg('Error: ' + (err.message || 'Unexpected error'), 'bot');
       });
     });
 
