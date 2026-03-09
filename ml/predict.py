@@ -3,7 +3,7 @@ import pickle
 
 from preprocess import clean_text
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "classifier.pkl")
 
 _model = None

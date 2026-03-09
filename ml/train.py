@@ -10,8 +10,8 @@ from sklearn.metrics import classification_report, accuracy_score
 
 from preprocess import load_dataset
 
-# Paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Paths (all under ml/)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "data", "raw", "dataset.csv")
 MODEL_PATH = os.path.join(BASE_DIR, "models", "classifier.pkl")
 
