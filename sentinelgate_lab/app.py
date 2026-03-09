@@ -488,7 +488,7 @@ def extract_username_for_lookup(text):
 @app.route('/chat/unsecured', methods=['POST'])
 @limit_requests
 def chat_unsecured():
-    """Unsecured chatbot – improved with query parameterization and injection checks"""
+    """Unsecured chatbot – intentionally leaky for demo (shows why protection matters)."""
     if not request.is_json:
         return jsonify({"status": "error", "message": "Request must be JSON"}), 400
     user_input = request.json.get('message', '').strip()
@@ -500,30 +500,31 @@ def chat_unsecured():
                 any(name in user_input for name in ['Admin', 'CEO', 'CTO', 'CFO', 'HR', 'Support', 'Developer', 'QA', 'Sales', 'Marketing', 'DevOps', 'Intern', 'Contractor', 'Manager', 'Analyst'])
 
     if is_lookup:
-        # refuse when SQL injection patterns are detected
-        if is_sql_injection(user_input):
-            return jsonify({
-                "status": "error",
-                "response": "Potentially malicious input detected; request denied."
-            }), 400
-
-        query_input = extract_username_for_lookup(user_input)
+        # DEMO: intentionally vulnerable version that shows data leakage when no client-side/script protection is present.
+        ensure_db_ready()
+        is_injection = is_sql_injection(user_input)
         try:
             with get_db_connection() as conn:
                 cursor = conn.cursor()
-                query = "SELECT * FROM secrets WHERE name = ?"
-                cursor.execute(query, (query_input,))
+                # Vulnerable concatenation on purpose so `' OR '1'='1` etc. will leak multiple rows.
+                query_input = extract_username_for_lookup(user_input) if not is_injection else user_input
+                query = f"SELECT * FROM secrets WHERE name = '{query_input}'"
+                cursor.execute(query)
                 result = [dict(row) for row in cursor.fetchall()]
                 if result:
-                    response = f"Here is the data you requested:\n" + "\n".join(
+                    response = "Here is the data you requested:\n" + "\n".join(
                         [f"- {r['name']}: {r['data']}" for r in result]
                     )
-                    return jsonify({"status": "success", "response": response})
+                    return jsonify({"status": "success", "response": response, "is_injection": is_injection})
                 else:
-                    return jsonify({"status": "success", "response": f"No record found for '{query_input}'."})
+                    return jsonify({
+                        "status": "success",
+                        "response": f"No record found for '{query_input}'.",
+                        "is_injection": is_injection,
+                    })
         except Exception as e:
-            app.logger.error(f"Chat query error: {e}")
-            return jsonify({"status": "error", "response": "Query error"}), 400
+            app.logger.error(f"Chat query error (unsecured): {e}")
+            return jsonify({"status": "error", "response": "Query error", "is_injection": is_injection}), 400
 
     return jsonify({"status": "success", "response": get_general_response(user_input)})
 
