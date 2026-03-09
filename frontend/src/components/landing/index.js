@@ -5,6 +5,7 @@ export { FeatureGrid } from './FeatureGrid';
 export { ScriptTagDemo } from './ScriptTagDemo';
 export { AIShield } from './AIShield';
 export { DemoSection } from './DemoSection';
+export { MLResults } from './MLResults';
 export { DatabaseSchema } from './DatabaseSchema';
 export { AttackTypes } from './AttackTypes';
 export { AboutSection } from './AboutSection';

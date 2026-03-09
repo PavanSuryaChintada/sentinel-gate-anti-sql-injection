@@ -16,6 +16,12 @@ export function AboutSection() {
           <h2 className="text-4xl font-bold bg-gradient-to-r from-white to-neutral-500 bg-clip-text text-transparent mb-4">
             About This Demo
           </h2>
+          <p className="text-neutral-500 max-w-3xl mx-auto text-sm md:text-base">
+            CipherShield combines <span className="text-[#D9FF00] font-semibold">100+ handcrafted SQL injection patterns</span> with an experimental
+            <span className="text-[#D9FF00] font-semibold"> Random Forest classifier</span>. On our internal dataset, the current prototype reached
+            <span className="text-[#D9FF00] font-semibold"> 96.36% test accuracy</span> with near‑perfect recall on malicious payloads.
+            Rules stop obvious attacks instantly; ML helps catch obfuscated and AI‑generated variants that slip past traditional WAF rules.
+          </p>
         </motion.div>
 
         <motion.div

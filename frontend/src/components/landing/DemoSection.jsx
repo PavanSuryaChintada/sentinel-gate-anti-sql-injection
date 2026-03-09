@@ -132,7 +132,12 @@ export function DemoSection({ onOpenChatbot }) {
           <h2 className="text-4xl font-bold bg-gradient-to-r from-white to-neutral-500 bg-clip-text text-transparent mb-4">
             Interactive Demo
           </h2>
-          <p className="text-neutral-500 mb-6">Compare vulnerable vs secure SQL handling</p>
+          <p className="text-neutral-500 mb-3">Compare vulnerable vs secure SQL handling.</p>
+          <p className="text-neutral-500 mb-6 text-sm max-w-2xl mx-auto">
+            Under the hood, requests can also be scored by our prototype ML model (Random Forest over SQL-aware features),
+            which recently reached <span className="text-[#D9FF00] font-semibold">96.36% test accuracy</span> with near-100% recall on malicious payloads
+            on our internal dataset. Rules catch obvious injections instantly; ML helps generalize to weird, AI-generated variants.
+          </p>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}

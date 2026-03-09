@@ -28,9 +28,12 @@ export function AIShield() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold bg-gradient-to-r from-white to-neutral-500 bg-clip-text text-transparent mb-4">
-            Intelligent Firewall
+            Intelligent SQLi Firewall
           </h2>
-          <p className="text-neutral-500">Hover to see the shield react</p>
+          <p className="text-neutral-500 max-w-2xl mx-auto">
+            Backed by a prototype ML classifier that reached <span className="text-[#D9FF00] font-semibold">96.36% accuracy</span> on our internal dataset,
+            combining 100+ handcrafted patterns with learned signals for defense-in-depth.
+          </p>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}

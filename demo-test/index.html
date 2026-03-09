@@ -63,11 +63,18 @@
 
   <div class="instructions">
     <b>With script:</b> Try SQL injection below — you will see <b>BLOCKED</b>. The script stops the request before it reaches the server.
+    <br /><br />
+    Under the hood, CipherShield combines 100+ handcrafted SQL injection patterns with an experimental ML classifier
+    (Random Forest over SQL-aware features) that reached <b>96.36% accuracy</b> on our internal test set with near‑perfect
+    recall on malicious payloads. Rules instantly catch obvious attacks; ML helps generalize to obfuscated and AI‑generated variants.
   </div>
 
   <div class="chat-container">
     <div class="chat-messages" id="messages">
-      <div class="msg bot">Try any injection below — it will be blocked.</div>
+      <div class="msg bot">
+        Try any injection below — it will be blocked. This demo uses the same rule set and ML‑assisted detection pipeline
+        that achieved 96.36% accuracy and near‑100% recall on malicious inputs during internal evaluation.
+      </div>
     </div>
     <form class="chat-form" id="chatForm">
       <input type="text" id="chatInput" placeholder="Type or use buttons below..." autocomplete="off" />

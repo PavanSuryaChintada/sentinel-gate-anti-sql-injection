@@ -7,6 +7,7 @@ import {
   ScriptTagDemo,
   AIShield,
   DemoSection,
+  MLResults,
   DatabaseSchema,
   AttackTypes,
   AboutSection,
@@ -38,6 +39,7 @@ function App() {
         <ScriptTagDemo />
         <AIShield />
         <DemoSection onOpenChatbot={() => setChatbotShow(true)} />
+        <MLResults />
         <DatabaseSchema />
         <AttackTypes />
         <AboutSection />

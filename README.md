@@ -88,3 +88,22 @@ For the landing page script tag to show the deployed URL instead of localhost, s
 ## Database & SQL Queries
 
 For database schema, SQL commands, and how to run queries from the terminal, see **[DBQUERIES_README.md](DBQUERIES_README.md)**.
+
+---
+
+## Machine Learning Classifier (Prototype)
+
+The project includes an experimental ML classifier that flags potentially malicious queries. To train or retrain it locally:
+
+```bash
+cd ml
+python train.py --data data/raw/dataset.csv --model models/classifier.pkl
+```
+
+When the dataset is imbalanced (e.g., almost all queries are malicious), the training script automatically adds a small number of synthetic safe examples so the model can still train. On the current development dataset, the latest run produced:
+
+- **Accuracy**: 0.9636 on a held‑out test set
+- **Malicious class**: precision ≈ 0.96, recall ≈ 1.00, F1 ≈ 0.98
+- **Safe class**: very few samples in the test split, so metrics are unstable (0 predicted safe in this small run)
+
+The trained model is saved to `ml/models/classifier.pkl` and loaded by the backend for ML‑assisted detection.

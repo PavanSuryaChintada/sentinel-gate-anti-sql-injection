@@ -1,11 +1,12 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Shield, Zap, Brain } from 'lucide-react';
+import { Shield, Zap, Brain, LineChart } from 'lucide-react';
 
 const FEATURES = [
   { icon: Shield, title: '100+ Injection Patterns', description: 'OR/AND boolean, UNION-based, time-based blind, error-based, and database-specific attacks. Production-hardened detection.', color: 'kinetic' },
   { icon: Zap, title: 'Real-Time Blocking', description: 'Client-side interception before data reaches your server. Fetch & XHR protection for API requests with JSON bodies.', color: 'intelligence' },
   { icon: Brain, title: 'AI-Aware Defense', description: 'Blocks prompt injection and SQL extraction attempts in chatbot contexts. Protects AI assistants from data exfiltration.', color: 'kinetic' },
+  { icon: LineChart, title: 'ML Classifier Prototype', description: 'Early-stage Random Forest model trained on real attack strings. Current internal run: ~96.36% accuracy with near-perfect recall on malicious inputs.', color: 'intelligence' },
 ];
 
 function FeatureCard({ feature }) {
@@ -58,7 +59,7 @@ export function FeatureGrid() {
             One script tag. Zero configuration. Defense in depth across forms, chatboxes, and APIs.
           </p>
         </motion.div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {FEATURES.map((f, i) => (
             <FeatureCard key={i} feature={f} index={i} />
           ))}

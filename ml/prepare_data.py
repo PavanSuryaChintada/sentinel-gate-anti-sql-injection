@@ -53,7 +53,13 @@ def clean_text(text: str) -> str:
     return text
 
 
-def prepare(in_path: str, out_path: str = DEFAULT_OUT, text_col: str = None, label_col: str = None) -> None:
+def prepare(
+    in_path: str,
+    out_path: str = DEFAULT_OUT,
+    text_col: str = None,
+    label_col: str = None,
+    default_label: int | None = None,
+) -> None:
     df = pd.read_csv(in_path)
     df.columns = [c.strip() for c in df.columns]
 
@@ -65,15 +71,23 @@ def prepare(in_path: str, out_path: str = DEFAULT_OUT, text_col: str = None, lab
             f"No text column found. Expected one of: {TEXT_COLUMNS}. "
             f"Your columns: {list(df.columns)}. Use --text-col <name> to specify."
         )
-    if not label_col:
+    if not label_col and default_label is None:
         raise ValueError(
             f"No label column found. Expected one of: {LABEL_COLUMNS}. "
-            f"Your columns: {list(df.columns)}. Use --label-col <name> to specify."
+            f"Your columns: {list(df.columns)}. Use --label-col <name> to specify, "
+            f"or use --assume-label 0/1 to assign a constant label."
         )
 
     out_df = pd.DataFrame()
     out_df["query"] = df[query_col].fillna("").astype(str).apply(clean_text)
-    out_df["label"] = df[label_col].apply(normalize_label)
+
+    if label_col:
+        labels = df[label_col]
+    else:
+        # No label column present; fall back to a constant label
+        labels = pd.Series(default_label, index=df.index)
+
+    out_df["label"] = labels.apply(normalize_label)
 
     # Drop empty or duplicate rows
     out_df = out_df[out_df["query"].str.len() >= 2].drop_duplicates(subset=["query"])
@@ -90,5 +104,17 @@ if __name__ == "__main__":
     parser.add_argument("--out", default=DEFAULT_OUT, help=f"Output path (default: {DEFAULT_OUT})")
     parser.add_argument("--text-col", help="Column name for text (auto-detected if not set)")
     parser.add_argument("--label-col", help="Column name for label (auto-detected if not set)")
+    parser.add_argument(
+        "--assume-label",
+        type=int,
+        choices=[0, 1],
+        help="If set, use this constant label (0=safe, 1=malicious) when no label column exists.",
+    )
     args = parser.parse_args()
-    prepare(args.input, args.out, args.text_col, args.label_col)
+    prepare(
+        args.input,
+        args.out,
+        args.text_col,
+        args.label_col,
+        default_label=args.assume_label,
+    )

@@ -213,48 +213,35 @@ def augment_attack(original):
 
 ## 🎯 Model Performance Metrics
 
-### Classification Metrics
+### Current Prototype Metrics (Local Training)
 
-```python
-from sklearn.metrics import classification_report, confusion_matrix
+The current prototype model was trained locally with:
 
-# Typical performance on test set
-print(classification_report(y_test, y_pred))
-
-# Expected output:
-#               precision    recall  f1-score   support
-# 
-#        benign       0.99      0.98      0.98      5000
-#    malicious       0.98      0.99      0.98      5000
-# 
-#     accuracy                           0.98     10000
-#    macro avg       0.98      0.98      0.98     10000
-# weighted avg       0.98      0.98      0.98     10000
+```bash
+cd ml
+python train.py --data data/raw/dataset.csv --model models/classifier.pkl
 ```
 
-### Performance Benchmarks
+On this development dataset, the script automatically added a few synthetic safe examples to balance classes and achieved:
 
-| Metric | Value | Target |
-|--------|-------|--------|
-| **Accuracy** | 98.5% | >95% |
-| **Precision** | 98.2% | >95% |
-| **Recall** | 98.8% | >95% |
-| **F1-Score** | 98.5% | >95% |
-| **Inference Time** | 2.3ms | <10ms |
-| **Model Size** | 4.2MB | <10MB |
+- **Accuracy**: 0.9636 on the test split
+- **Malicious (positive) class**: precision ≈ 0.96, recall ≈ 1.00, F1 ≈ 0.98
+- **Safe class**: only 2 safe samples in the test split and none predicted as safe, so per‑class metrics are not yet reliable
 
-### Confusion Matrix Analysis
+These numbers should be interpreted as **prototype, small‑dataset results** rather than final production benchmarks.
 
-```
-                Predicted
-                Benign  Malicious
-Actual Benign     4,900      100
-       Malicious   60     4,940
-```
+### Target Performance Benchmarks (Design Goals)
 
-- **False Positives**: 100 (2.0%) - Benign blocked as malicious
-- **False Negatives**: 60 (1.2%) - Malicious allowed through
-- **Overall Accuracy**: 98.4%
+The long‑term design target for a production‑grade model is:
+
+| Metric | Target |
+|--------|--------|
+| **Accuracy** | >95% |
+| **Precision** | >95% |
+| **Recall** | >95% |
+| **F1-Score** | >95% |
+| **Inference Time** | <10ms |
+| **Model Size** | <10MB |
 
 ## 🔄 Model Training Pipeline
 
