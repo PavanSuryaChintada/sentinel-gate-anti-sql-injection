@@ -11,6 +11,7 @@ _basedir = os.path.dirname(os.path.abspath(__file__))
 _proj_root = os.path.dirname(_basedir)
 _react_dist = os.path.join(_proj_root, 'frontend', 'dist')
 _use_react = os.path.exists(os.path.join(_react_dist, 'index.html'))
+_demo_test_dir = os.path.join(_proj_root, 'demo-test')
 
 app = Flask(__name__, template_folder=os.path.join(_basedir, 'templates'), static_folder=os.path.join(_basedir, 'static'))
 
@@ -231,6 +232,14 @@ def home():
     resp.headers['Pragma'] = 'no-cache'
     resp.headers['Expires'] = '0'
     return resp
+
+
+@app.route('/demo-test/<path:filename>')
+def serve_demo_test(filename):
+    """Serve the standalone HTML demos (with-script / no-script) through Flask so fetch() hits the same origin."""
+    if os.path.exists(os.path.join(_demo_test_dir, filename)):
+        return send_from_directory(_demo_test_dir, filename)
+    return jsonify({"status": "error", "message": "Not found"}), 404
 
 
 @app.route('/assets/<path:filename>')
